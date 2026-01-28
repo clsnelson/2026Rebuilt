@@ -9,7 +9,7 @@ from wpimath.geometry import Pose3d, Pose2d
 from constants import Constants
 from lib.limelight import PoseEstimate, LimelightHelpers
 from subsystems import StateSubsystem
-from subsystems.swerve import SwerveSubsystem
+from subsystems.swerve import CommandSwerveDrivetrain
 
 
 class VisionSubsystem(StateSubsystem):
@@ -35,7 +35,7 @@ class VisionSubsystem(StateSubsystem):
         NO_ESTIMATES = []
         """ Ignores all Limelight pose estimates. """
 
-    def __init__(self, swerve: SwerveSubsystem, *cameras: str):
+    def __init__(self, swerve: CommandSwerveDrivetrain, *cameras: str):
         super().__init__("Vision", self.SubsystemState.ALL_ESTIMATES)
 
         self._swerve = swerve
@@ -101,7 +101,7 @@ class VisionSubsystem(StateSubsystem):
             LimelightHelpers.set_fiducial_id_filters_override(camera, desired_state.value)
 
     def _process_camera(self, camera: str) -> tuple[str, PoseEstimate | None]:
-        state = self._swerve.get_state_copy()
+        state = self._swerve.get_state()
         LimelightHelpers.set_robot_orientation(
             camera, state.pose.rotation().degrees(), 0, 0, 0, 0, 0
         )

@@ -8,7 +8,7 @@ from wpimath.geometry import Pose3d
 
 from constants import Constants
 from subsystems.intake import IntakeSubsystem
-from subsystems.swerve import SwerveSubsystem
+from subsystems.swerve import CommandSwerveDrivetrain
 from subsystems.vision import VisionSubsystem
 from subsystems.climber import ClimberSubsystem
 
@@ -40,7 +40,7 @@ class Superstructure(Subsystem):
        
     }
 
-    def __init__(self, drivetrain: SwerveSubsystem, vision: VisionSubsystem, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
+    def __init__(self, drivetrain: CommandSwerveDrivetrain, vision: VisionSubsystem, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
         """
         Constructs the superstructure using instance of each subsystem.
         Subsystems are optional to support robots that don't have all hardware.
@@ -80,15 +80,16 @@ class Superstructure(Subsystem):
     def _set_goal(self, goal: Goal) -> None:
         self._goal = goal
 
-        vision_state = self._goal_to_states.get(goal, (None, None, None, None))
+        goal_states = self._goal_to_states.get(goal, (None, None))
+        intake_state, vision_state = goal_states
         
-        if vision_state:
-            self.VisionSubsystem.set_desired_state(vision_state)
+        if vision_state is not None:
+            self.vision.set_desired_state(vision_state)
         
-        # Handle intake if present
+        if self.intake is not None and intake_state is not None:
+            self.intake.set_desired_state(intake_state)
         if self.intake is not None:
-            intake_state = self.intake.get_current_state()
-            safety_checks = self._should_enable_safety_checks(intake_state)  # TODO pass states that are required for safety checks
+            safety_checks = self._should_enable_safety_checks(self.intake.get_current_state())  # TODO pass states that are required for safety checks
 
     def _should_enable_safety_checks(self, intake_state: Optional[IntakeSubsystem.SubsystemState]) -> bool:
         """ Safety check example of intake being in the frame """

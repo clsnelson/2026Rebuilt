@@ -18,7 +18,7 @@ from subsystems.climber import ClimberSubsystem
 from subsystems.climber.io import ClimberIOTalonFX, ClimberIOSim
 from subsystems.intake import IntakeSubsystem
 from subsystems.superstructure import Superstructure
-from subsystems.swerve import SwerveSubsystem
+from subsystems.swerve import CommandSwerveDrivetrain
 from subsystems.swerve.requests import DriverAssist
 from subsystems.vision import VisionSubsystem
 from typing import Optional
@@ -43,7 +43,7 @@ class RobotContainer:
         # Initialize subsystems as None - will be created conditionally
         self.climber: Optional[ClimberSubsystem] = None
         self.intake: Optional[IntakeSubsystem] = None
-        self.drivetrain: Optional[SwerveSubsystem] = None
+        self.drivetrain: Optional[CommandSwerveDrivetrain] = None
         self.vision: Optional[VisionSubsystem] = None
         match Constants.currentMode:
             case Constants.Mode.REAL:
