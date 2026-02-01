@@ -3,13 +3,17 @@ from dataclasses import dataclass, field
 from typing import Final
 
 from phoenix6 import BaseStatusSignal
-from phoenix6.configs import TalonFXConfiguration
+from phoenix6.configs import TalonFXConfiguration, MotorOutputConfigs, FeedbackConfigs, HardwareLimitSwitchConfigs, ProximityParamsConfigs, CurrentLimitsConfigs
 from phoenix6.controls import VoltageOut
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue
 from pykit.autolog import autolog
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius, degrees
-from wpilib.simulation import DCMotorSim
+from wpimath.units import radians, radians_per_second, volts, amperes, celsius, degrees, rotationsToRadians
+from wpilib.simulation import DCMotorSim, EncoderSim
+from wpimath.system.plant import DCMotor, LinearSystemId
+from wpilib import Encoder, PWMTalonFX, RobotController
+from wpimath.controller import PIDController
+from wpimath.trajectory import TrapezoidProfile
 
 from constants import Constants
 from util import tryUntilOk
@@ -115,25 +119,52 @@ class TurretIOSim(TurretIO):
 
     def __init__(self) -> None:
         """Initialize the simulation IO."""
+        self.motor = DCMotor.krakenX60(1)
+        self.turretSim = DCMotorSim(LinearSystemId.DCMotorSystem(self.motor, .455, Constants.TurretConstants.GEAR_RATIO), self.motor) # MOI is a placeholder
+        self.closed_loop = False
+
         self._motorPosition: float = 0.0
         self._motorVelocity: float = 0.0
-        self._motorAppliedVolts: float = 0.0
-        self.motor_sim = DCMotorSim(self._motor, Constants.TurretConstants.GEAR_RATIO, 0.455) # MOI is a placeholder
+        self.AppliedVolts: float = 0.0
 
-    def simulationPeriodic(self):
-        # Sim is not done
-        self.motor_sim.setInputVoltage()
-        DCMotorSim.setInputVoltage()
-        DCMotorSim.update()
-
+        self.controller = PIDController(
+            Constants.TurretConstants.GAINS.k_p,
+            Constants.TurretConstants.GAINS.k_i,
+            Constants.TurretConstants.GAINS.k_d,
+            ) 
 
     def updateInputs(self, inputs: TurretIO.TurretIOInputs) -> None:
         """Update inputs with simulated state."""
         # Simulate motor behavior (simple integration)
         # In a real simulation, you'd use a physics model here
         dt = 0.02  # 20ms periodic
-        self._motorPosition += self._motorVelocity * dt
 
+        if self.closed_loop:
+            self.AppliedVolts = self.controller.calculate(self.turretSim.getAngularPosition())
+        else:
+            self.controller.reset(self.turretSim.getAngularPosition(), self.turretSim.getAngularAcceleration())
+
+        self.setMotorVoltage(self.AppliedVolts)
+        self.turretSim.update(dt)
+
+        inputs.motorConnected = True
+        inputs.motorPosition = self._motorPosition
+        inputs.motorVelocity = self._motorVelocity
+        inputs.motorAppliedVolts = self._motorAppliedVolts
+        inputs.motorCurrent = abs(self._motorAppliedVolts / 12.0) * 40.0  # Rough current estimate
+        inputs.motorTemperature = 25.0  # Room temperature
+
+
+    def setOpenLoop(self, output):
+        self.closed_loop = False
+        self.AppliedVolts = output
+
+    def setPosition(self, position):
+        self.closed_loop = True
+        self.controller.setSetpoint(rotationsToRadians(position))
+
+
+        """
         # Update inputs
         inputs.motorConnected = True
         inputs.motorPosition = self._motorPosition
@@ -142,6 +173,11 @@ class TurretIOSim(TurretIO):
         inputs.motorCurrent = abs(self._motorAppliedVolts / 12.0) * 40.0  # Rough current estimate
         inputs.motorTemperature = 25.0  # Room temperature
 
+        self.inputVoltage = self.motor.get() * RobotController.getBatteryVoltage()
+        self.motor_sim.setInputVoltage(self.inputVoltage)
+
+        self.motor_sim.update(dt)  # 20ms periodic
+        """
 
     def setMotorVoltage(self, voltage: volts) -> None:
         """Set the motor output voltage (simulated)."""
