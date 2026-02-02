@@ -62,7 +62,7 @@ class LauncherSubsystem(StateSubsystem):
         if not super().set_desired_state(desired_state):
             return
         
-        if True: # results change based on whether hub is active, based on fms stuff, to be implemented when the robot container isnt fried anymore
+        if True: # Will be determined by the superstate of the robot
             desired_state = self.SubsystemState.SCORE if self.find_position() <= 4.667 else self.SubsystemState.PASS
         else:
             desired_state = self.SubsystemState.IDLE
