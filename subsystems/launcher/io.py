@@ -9,6 +9,9 @@ from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue
 from pykit.autolog import autolog
 from wpimath.units import radians, radians_per_second, volts, amperes, celsius, degrees, revolutions_per_minute
+from wpimath.system.plant import DCMotor
+from wpilib.simulation import DCMotorSim
+from wpimath.controller import ProfiledPIDController
 
 from constants import Constants
 from util import tryUntilOk
@@ -120,21 +123,37 @@ class LauncherIOSim(LauncherIO):
 
     def __init__(self) -> None:
         """Initialize the simulation IO."""
+        self._motorType = DCMotor.krakenX60(1) 
+        # could be two but ill adjust when i confirm at practice (still dont have access to the cad lol)
+
+        self._simMotor = DCMotorSim(self._motorType, Constants.LauncherConstants.GEAR_RATIO, 0.1)
+        self._closedloop = False
+
         self._motorPosition: float = 0.0
         self._motorVelocity: float = 0.0
         self._motorAppliedVolts: float = 0.0
+
+        self._controller = ProfiledPIDController(Constants.LauncherConstants.GAINS.k_p,
+                                        Constants.LauncherConstants.GAINS.k_i,
+                                        Constants.LauncherConstants.GAINS.k_d)
 
     def updateInputs(self, inputs: LauncherIO.LauncherIOInputs) -> None:
         """Update inputs with simulated state."""
         # Simulate motor behavior (simple integration)
         # In a real simulation, you'd use a physics model here
-        dt = 0.02  # 20ms periodic
-        self._motorPosition += self._motorVelocity * dt
+
+        if (self._closedloop):
+            self._motorVelocity = self._controller.calculate(self._simMotor.getAngularVelocityRPM())
+        else:
+            self._controller.reset(self._simMotor.getAngularPosition(), self._simMotor.getAngularAcceleration())
+
+        self.setMotorRPS(self._motorVelocity)
+        self._simMotor.update(0.02)
 
         # Update inputs
         inputs.motorConnected = True
-        inputs.motorPosition = self._motorPosition
-        inputs.motorVelocity = self._motorVelocity
+        inputs.motorPosition = self._simMotor.getAngularPosition()
+        inputs.motorVelocity = self._simMotor.getAngularVelocity()
         inputs.motorAppliedVolts = self._motorAppliedVolts
         inputs.motorCurrent = abs(self._motorAppliedVolts / 12.0) * 40.0  # Rough current estimate
         inputs.motorTemperature = 25.0  # Room temperature
@@ -142,7 +161,9 @@ class LauncherIOSim(LauncherIO):
 
     def setMotorRPS(self, rps: float) -> None:
         """Set the motor output velocity."""
-        self._motorAppliedVolts = max(-12.0, min(12.0, rps))
-        # Simple velocity model: voltage -> velocity (with some damping)
-        self._motorVelocity = self._motorAppliedVolts * 10.0  # Adjust multiplier as needed
+        self._motorVelocity = rps
+        # opposite of the other sims, switcharoo of volts and rps
+        self._motorAppliedVolts = max(-12.0, min(12.0, self._motorVelocity/10))
+        
+        
 
