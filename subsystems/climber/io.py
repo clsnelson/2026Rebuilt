@@ -106,6 +106,9 @@ class ClimberIOTalonFX(ClimberIO):
         self._voltage_request.output = voltage
         self._motor.set_control(self._voltage_request)
 
+    def get_position(self, position) -> None:
+        self._motor.set_control(self._voltage_request)
+
 
 class ClimberIOSim(ClimberIO):
     """
@@ -143,7 +146,7 @@ class ClimberIOSim(ClimberIO):
         if (self._closed_loop):
             self._motor_applied_volts = self._controller.calculate(self._climber_sim.getAngularPosition())
         else:
-            self._controller.reset(self._climber_sim.getAngularPosition(), self._climber_sim.getAngularAcceleration())
+            self._controller.reset()
 
         self.setMotorVoltage(self._motor_applied_volts)
         self._climber_sim.update(0.02)  # 20ms periodic
@@ -163,6 +166,10 @@ class ClimberIOSim(ClimberIO):
     def setPosition(self, position):
         self._closed_loop = True
         self._controller.getSetpoint(rotationsToRadians(position))
+
+    def getPosition(self, position):
+        pass
+
 
     def setMotorVoltage(self, voltage: volts) -> None:
         """Set the motor output voltage (simulated)."""
