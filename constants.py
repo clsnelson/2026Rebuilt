@@ -69,8 +69,8 @@ class Constants:
         MOMENT_OF_INERTIA = None
 
     class VisionConstants:
-        FRONT = "limelight-fr"
-        LAUNCHER = "limelight-al"
+        FRONT = "limelight-front"
+        # LAUNCHER = "limelight-al"
 
 
 
