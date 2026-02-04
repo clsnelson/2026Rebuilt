@@ -138,7 +138,7 @@ def _init_hardware_configs():
                 .with_k_a(0.0)
             )
             Constants.LauncherConstants.SUPPLY_CURRENT = 30.0  # Amperes
-            Constants.LauncherConstants.MOMENT_OF_INERTIA = 0.0067
+            Constants.LauncherConstants.MOMENT_OF_INERTIA =  0.00307006241199
 
             # Feeder
             Constants.FeederConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio

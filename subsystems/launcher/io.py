@@ -122,8 +122,7 @@ class LauncherIOSim(LauncherIO):
 
     def __init__(self) -> None:
         """Initialize the simulation IO."""
-        self._motorType = DCMotor.krakenX60(1) 
-        # could be two but ill adjust when i confirm at practice (still dont have access to the cad lol)
+        self._motorType = DCMotor.krakenX44FOC(2) 
 
         linearSystem = LinearSystemId.flywheelSystem(
             self._motorType,

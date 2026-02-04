@@ -32,7 +32,7 @@ class LauncherSubsystem(StateSubsystem):
 
         self._io: Final[LauncherIO] = io
         self._inputs = LauncherIO.LauncherIOInputs()
-        self._robot_pose_supplier = robot_pose_supplier()
+        self._robot_pose_supplier = robot_pose_supplier
         
         self._motorDisconnectedAlert = Alert("Launcher motor is disconnected.", Alert.AlertType.kError)
 
@@ -65,10 +65,10 @@ class LauncherSubsystem(StateSubsystem):
 
         motor_rps = self._state_configs.get(
             desired_state, 
-            12.0
+            0.0
         )
         
-        self._io.setMotorRPS(motor_rps)
+        self._io.setMotorRPS(motor_rps) 
 
     def find_position(self) -> float:
-        return self._robot_pose_supplier.X
+        return self._robot_pose_supplier().X
