@@ -117,9 +117,9 @@ class HoodIOTalonFX(HoodIO):
         inputs.hood_temperature = self.temperature.value_as_double
         inputs.hood_setpoint = self.setpoint.value_as_double
 
-    def set_position(self, rotation: Rotation2d) -> None:
+    def set_position(self, rotation: float) -> None:
         """Set the position."""
-        self.hood_motor.set_control(self.position_request)
+        self.hood_motor.set_control(self.position_request.with_position(rotation))
 
 class HoodIOSim(HoodIO):
     """Sim version of HoodIO."""
