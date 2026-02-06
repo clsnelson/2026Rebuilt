@@ -3,7 +3,7 @@ VisionSubsystem!
 
 Reads all cameras, updates camera inputs and throttles, etc.
 """
-import math
+from math import inf
 from typing import Callable
 
 from commands2 import Subsystem
@@ -17,7 +17,7 @@ from subsystems.vision.io import (CameraObservation, VisionIO, VisionObservation
                                   ObservationType, VisionIOLimelight)
 
 
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods, too-many-instance-attributes
 class VisionSubsystem(Subsystem):
     """el visione"""
 
@@ -28,38 +28,82 @@ class VisionSubsystem(Subsystem):
         *ios: VisionIO) -> None:
         super().__init__()
 
-        self.consumer = vision_consumer
-        self.io = ios
+        self._consumer = vision_consumer
+        self._io = ios
 
         # Initialize inputs
-        self.inputs = tuple(VisionIO.VisionIOInputs() for _ in ios)
+        self._inputs = tuple(VisionIO.VisionIOInputs() for _ in ios)
 
         # Initialize disconnected alerts
-        self.disconnected_alerts = tuple(
-            Alert(f"Camera {io.get_name()} is disconnected.", Alert.AlertType.kWarning)
-            for io in ios
+        self._alerts = tuple(
+            Alert(f"Camera {cam.get_name()} is disconnected.", Alert.AlertType.kWarning)
+            for cam in ios
         )
+
+        # Pre-allocate lists and other things for fewer lookups
+        self._tag_poses = [[] for _ in self._inputs]
+        self._robot_poses = [[] for _ in self._inputs]
+        self._robot_poses_accepted = [[] for _ in self._inputs]
+        self._robot_poses_rejected = [[] for _ in self._inputs]
+
+        self._all_tag_poses = []
+        self._all_robot_poses = []
+        self._all_robot_poses_accepted = []
+        self._all_robot_poses_rejected = []
+
+        self._field_layout = Constants.FIELD_LAYOUT
+        self._field_length = self._field_layout.getFieldLength()
+        self._field_width = self._field_layout.getFieldWidth()
+
+        self._max_ambiguity = Constants.VisionConstants.max_ambiguity
+        self._max_z_error = Constants.VisionConstants.max_z_error
+
+        self._linear_std_baseline = Constants.VisionConstants.linear_std_dev_baseline
+        self._angular_std_baseline = Constants.VisionConstants.angular_std_dev_baseline
 
     # pylint: disable=too-many-locals
     def periodic(self) -> None:
         """Log and send all observations."""
-        for idx, (cam, inp) in enumerate(zip(self.io, self.inputs)):
+        io = self._io
+        inputs = self._inputs
+        alerts = self._alerts
+        max_amb = self._max_ambiguity
+        max_z = self._max_z_error
+        field = self._field_layout
+        field_len = self._field_length
+        field_wid = self._field_width
+        lin_base = self._linear_std_baseline
+        ang_base = self._angular_std_baseline
+        tag_poses = self._tag_poses
+        robot_poses = self._robot_poses
+        robot_poses_accepted = self._robot_poses_accepted
+        robot_poses_rejected = self._robot_poses_rejected
+        all_tag_poses = self._all_tag_poses
+        all_robot_poses = self._all_robot_poses
+        all_robot_poses_accepted = self._all_robot_poses_accepted
+        all_robot_poses_rejected = self._all_robot_poses_rejected
+        consumer = self._consumer
+
+        for i, (cam, inp) in enumerate(zip(io, inputs)):
             cam.update_inputs(inp)
-            Logger.processInputs(f"Vision/{inp.name}", self.inputs[idx])
-            self.disconnected_alerts[idx].set(not inp.connected)
+            Logger.processInputs(f"Vision/{inp.name}", inputs[i])
+            alerts[i].set(not inp.connected)
 
-        all_tag_poses = []
-        all_robot_poses = []
-        all_robot_poses_accepted = []
-        all_robot_poses_rejected = []
-
-        for cam, camera in enumerate(self.inputs):
-            tag_poses = []
-            robot_poses = []
-            robot_poses_accepted = []
-            robot_poses_rejected = []
+        all_tag_poses.clear()
+        all_robot_poses.clear()
+        all_robot_poses_accepted.clear()
+        all_robot_poses_rejected.clear()
+        for i, camera in enumerate(inputs):
+            tag_poses = tag_poses[i]
+            robot_poses = robot_poses[i]
+            robot_poses_accepted = robot_poses_accepted[i]
+            robot_poses_rejected = robot_poses_rejected[i]
+            tag_poses.clear()
+            robot_poses.clear()
+            robot_poses_accepted.clear()
+            robot_poses_rejected.clear()
             for tag_id in camera.tag_ids:
-                pose = Constants.FIELD_LAYOUT.getTagPose(tag_id)
+                pose = field.getTagPose(tag_id)
                 if pose is not None:
                     tag_poses.append(pose)
 
@@ -68,13 +112,11 @@ class VisionSubsystem(Subsystem):
                     observation.tag_count == 0
                     or (
                     observation.tag_count == 1
-                    and observation.ambiguity > Constants.VisionConstants.max_ambiguity
+                    and observation.ambiguity > max_amb
                     )
-                    or abs(observation.pose.Z()) > Constants.VisionConstants.max_z_error
-                    or observation.pose.X() < 0.0
-                    or observation.pose.X() > Constants.FIELD_LAYOUT.getFieldLength()
-                    or observation.pose.Y() < 0.0
-                    or observation.pose.Y() > Constants.FIELD_LAYOUT.getFieldWidth()
+                    or abs(observation.pose.Z()) > max_z
+                    or not (0.0 <= observation.pose.X() <= field_len)
+                    or not (0.0 <= observation.pose.Y() <= field_wid)
                 )
 
                 robot_poses.append(observation.pose)
@@ -86,17 +128,18 @@ class VisionSubsystem(Subsystem):
                 if reject_pose:
                     continue
 
-                std_dev_factor: float = (
-                    pow(observation.avg_tag_dist, 2.0) / observation.tag_count
+                std_dev_factor = (
+                        (observation.avg_tag_dist * observation.avg_tag_dist)
+                        / observation.tag_count
                 )
-                linear_std = Constants.VisionConstants.linear_std_dev_baseline * std_dev_factor
-                if observation.observation == ObservationType.MEGATAG_2:
-                    angular_std = math.inf
+                linear_std = lin_base * std_dev_factor
+                if observation.observation == ObservationType.MEGATAG_2.value:
+                    angular_std = inf
                 else:
-                    angular_std = (Constants.VisionConstants.angular_std_dev_baseline *
+                    angular_std = (ang_base *
                                    std_dev_factor)
 
-                self.consumer(
+                consumer(
                     observation.pose.toPose2d(),
                     observation.timestamp,
                     (linear_std, linear_std, angular_std)
@@ -121,6 +164,5 @@ class VisionSubsystem(Subsystem):
         Sets the throttle for all Limelights.
         This is to prevent overheating.
         """
-        for cam in self.io:
-            if isinstance(cam, VisionIOLimelight):
-                cam.set_throttle(throttle)
+        for cam in self._io:
+            cam.set_throttle(throttle)

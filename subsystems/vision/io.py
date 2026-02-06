@@ -47,7 +47,7 @@ class VisionObservation:
     """
     pose: Pose2d
     timestamp: float
-    std: tuple[float]
+    std: tuple[float, float, float]
 
 
 # pylint: disable=too-few-public-methods
@@ -67,6 +67,10 @@ class VisionIO(ABC):
     @abstractmethod
     def update_inputs(self, inputs: VisionIOInputs) -> None:
         """Update subsystem inputs."""
+
+    @abstractmethod
+    def set_throttle(self, throttle: int) -> None:
+        """Set the throttle."""
 
     @abstractmethod
     def get_name(self) -> str:
@@ -131,7 +135,7 @@ class VisionIOLimelight(VisionIO):
                         sample.time * 1e-6 - sample.value[6] * 1e-3,
 
                         # 3D pose estimate
-                        self.parse_pose(sample.value),
+                        VisionIOLimelight.parse_pose(sample.value),
 
                         # Ambiguity
                         # Using only the first tag because ambiguity isn't applicable for multi tag
@@ -159,7 +163,7 @@ class VisionIOLimelight(VisionIO):
                         sample.time * 1e-6 - sample.value[6] * 1e-3,
 
                         # 3D pose estimate
-                        self.parse_pose(sample.value),
+                        VisionIOLimelight.parse_pose(sample.value),
 
                         # Ambiguity (0 because MegaTag 2 is already disambiguated)
                         0.0,
