@@ -31,6 +31,8 @@ from subsystems.turret import TurretSubsystem
 from subsystems.turret.io import TurretIOTalonFX, TurretIOSim
 import inspect
 
+from subsystems.vision.io import VisionIOLimelight
+
 
 class RobotContainer:
     def __init__(self) -> None:
@@ -61,8 +63,12 @@ class RobotContainer:
 
                 if has_subsystem("vision"):
                     self.vision = VisionSubsystem(
-                        self.drivetrain,
-                        Constants.VisionConstants.FRONT,
+                        self.drivetrain.add_vision_measurement,
+                        VisionIOLimelight(
+                            Constants.VisionConstants.FRONT,
+                            Constants.VisionConstants.robot_to_front,
+                            self.drivetrain.get_state().pose.rotation
+                        ),
                     )
 
                 if has_subsystem("turret"):
@@ -114,9 +120,14 @@ class RobotContainer:
                 # Sim robot, instantiate physics sim IO implementations (if available)
                 self.drivetrain = TunerConstants.create_drivetrain()
                 self.vision = VisionSubsystem(
-                    self.drivetrain,
-                    Constants.VisionConstants.FRONT,
+                    self.drivetrain.add_vision_measurement,
+                    VisionIOLimelight(
+                        Constants.VisionConstants.FRONT,
+                        Constants.VisionConstants.robot_to_front,
+                        self.drivetrain.get_state().pose.rotation
+                    ),
                 )
+
                 #hood
                 robot_pose_supplier = lambda: self.drivetrain.get_state().pose
                 self.hood = HoodSubsystem(HoodIOSim(), robot_pose_supplier)
@@ -132,7 +143,7 @@ class RobotContainer:
                     print("Climber subsystem not available on this robot")
 
         self.superstructure = Superstructure(
-            self.drivetrain, self.vision, self.climber, self.intake
+            self.drivetrain, self.climber, self.intake
         )
 
         self._setup_swerve_requests()
