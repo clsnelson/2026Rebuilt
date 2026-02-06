@@ -63,7 +63,7 @@ class ClimberIOTalonFX(ClimberIO):
         # Create status signals for motor
         self._position: Final = self._motor.get_position()
         self._velocity: Final = self._motor.get_velocity()
-        self._appliedVolts: Final = self._motor.get_motor_voltage()
+        self._applied_volts: Final = self._motor.get_motor_voltage()
         self._current: Final = self._motor.get_stator_current()
         self._temperature: Final = self._motor.get_device_temp()
 
@@ -72,7 +72,7 @@ class ClimberIOTalonFX(ClimberIO):
             50,
             self._position,
             self._velocity,
-            self._appliedVolts,
+            self._applied_volts,
             self._current,
             self._temperature
         )
@@ -81,26 +81,26 @@ class ClimberIOTalonFX(ClimberIO):
         # Voltage control request
         self._voltage_request: Final[VoltageOut] = VoltageOut(0)
 
-    def updateInputs(self, inputs: ClimberIO.ClimberIOInputs) -> None:
+    def update_inputs(self, inputs: ClimberIO.ClimberIOInputs) -> None:
         """Update inputs with current motor and servo state."""
         # Refresh all motor signals
-        motorStatus = BaseStatusSignal.refresh_all(
+        motor_status = BaseStatusSignal.refresh_all(
             self._position,
             self._velocity,
-            self._appliedVolts,
+            self._applied_volts,
             self._current,
             self._temperature
         )
 
         # Update motor inputs
-        inputs.motor_connected = motorStatus.is_ok()
+        inputs.motor_connected = motor_status.is_ok()
         inputs.motor_position = self._position.value_as_double
         inputs.motor_velocity = self._velocity.value_as_double
-        inputs.motor_applied_volts = self._appliedVolts.value_as_double
+        inputs.motor_applied_volts = self._applied_volts.value_as_double
         inputs.motor_current = self._current.value_as_double
         inputs.motor_temperature = self._temperature.value_as_double
 
-    def setMotorVoltage(self, voltage: volts) -> None:
+    def set_motor_voltage(self, voltage: volts) -> None:
         """Set the motor output voltage."""
         self._voltage_request.output = voltage
         self._motor.set_control(self._voltage_request)
@@ -137,7 +137,7 @@ class ClimberIOSim(ClimberIO):
                                         Constants.ClimberConstants.GAINS.k_d)
 
 
-    def updateInputs(self, inputs: ClimberIO.ClimberIOInputs) -> None:
+    def update_inputs(self, inputs: ClimberIO.ClimberIOInputs) -> None:
         """Update inputs with simulated state."""
         # Simulate motor behavior (simple integration)
         # In a real simulation, you'd use a physics model here
@@ -147,7 +147,7 @@ class ClimberIOSim(ClimberIO):
         else:
             self._controller.reset()
 
-        self.setMotorVoltage(self._motor_applied_volts)
+        self.set_motor_voltage(self._motor_applied_volts)
         self._climber_sim.update(0.02)  # 20ms periodic
 
         # Update inputs
@@ -169,7 +169,7 @@ class ClimberIOSim(ClimberIO):
     def get_position(self) -> float:
         return self._motor_position
 
-    def setMotorVoltage(self, voltage: volts) -> None:
+    def set_motor_voltage(self, voltage: volts) -> None:
         """Set the motor output voltage (simulated)."""
         self._motor_applied_volts = max(-12.0, min(12.0, voltage))
         # Simple velocity model: voltage -> velocity (with some damping)

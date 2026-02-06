@@ -69,7 +69,7 @@ class ClimberSubsystem(StateSubsystem):
         )
 
         # Set motor voltage through IO layer
-        self._io.setMotorVoltage(motor_voltage)
+        self._io.set_motor_voltage(motor_voltage)
 
     def get_position(self) -> float:
         return self._io.get_position()
