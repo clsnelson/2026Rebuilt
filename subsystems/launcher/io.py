@@ -6,7 +6,8 @@ from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
 from phoenix6.controls import VelocityVoltage, Follower
 from phoenix6.hardware import TalonFX
-from phoenix6.signals import NeutralModeValue
+from phoenix6.signals import NeutralModeValue, MotorAlignmentValue
+
 from pykit.autolog import autolog
 from wpimath.units import radians, radians_per_second, volts, amperes, celsius
 from wpimath.system.plant import DCMotor, LinearSystemId
@@ -92,7 +93,7 @@ class LauncherIOTalonFX(LauncherIO):
 
         # Control requests
         self._voltageRequest: Final[VelocityVoltage] = VelocityVoltage(0)
-        self._follower_motor.set_control(Follower(CanIds.LAUNCHER_TOP_TALON, False))
+        self._follower_motor.set_control(Follower(CanIds.LAUNCHER_TOP_TALON, MotorAlignmentValue.ALIGNED))
 
     def updateInputs(self, inputs: LauncherIO.LauncherIOInputs) -> None:
         """Update inputs with current motor state."""
