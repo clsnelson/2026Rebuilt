@@ -104,7 +104,7 @@ class RobotContainer:
                     print("Feeder subsystem not available on this robot")
 
                 if has_subsystem("launcher"):
-                    launcher_io = LauncherIOTalonFX(Constants.CanIDs.LAUNCHER_LEFT_TALON)
+                    launcher_io = LauncherIOTalonFX()
                     self.launcher = LauncherSubsystem(launcher_io, lambda: self.drivetrain.get_state().pose)
                     print("Launcher, Present")
                 else:

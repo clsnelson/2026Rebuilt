@@ -12,6 +12,7 @@ from wpimath.units import radians, radians_per_second, volts, amperes, celsius
 from wpimath.system.plant import DCMotor, LinearSystemId
 from wpimath.controller import PIDController
 from wpilib.simulation import FlywheelSim
+from math import pi
 
 from constants import Constants
 LauncherConstants = Constants.LauncherConstants
@@ -58,8 +59,8 @@ class LauncherIOTalonFX(LauncherIO):
         """
         Initialize the real hardware IO.
         """
-        self._main_motor: Final[TalonFX] = TalonFX(CanIds.LAUNCHER_LEFT_TALON, "rio")
-        self._follower_motor: Final[TalonFX] = TalonFX(CanIds.LAUNCHER_RIGHT_TALON, "rio")
+        self._main_motor: Final[TalonFX] = TalonFX(CanIds.LAUNCHER_TOP_TALON, "rio")
+        self._follower_motor: Final[TalonFX] = TalonFX(CanIds.LAUNCHER_LOW_TALON, "rio")
 
         # Apply motor configuration
         _motor_config = TalonFXConfiguration()
@@ -91,7 +92,7 @@ class LauncherIOTalonFX(LauncherIO):
 
         # Control requests
         self._voltageRequest: Final[VelocityVoltage] = VelocityVoltage(0)
-        self._follower_motor.set_control(Follower(CanIds.LAUNCHER_LEFT_TALON))
+        self._follower_motor.set_control(Follower(CanIds.LAUNCHER_TOP_TALON, False))
 
     def updateInputs(self, inputs: LauncherIO.LauncherIOInputs) -> None:
         """Update inputs with current motor state."""
@@ -140,9 +141,9 @@ class LauncherIOSim(LauncherIO):
         self._motorAppliedVolts: float = 0.0
 
         self._controller = PIDController(
-                            LauncherConstants.GAINS.k_p,
-                            LauncherConstants.GAINS.k_i,
-                            LauncherConstants.GAINS.k_d,
+                            LauncherConstants.GAINS.k_p / 2*pi,
+                            LauncherConstants.GAINS.k_i / 2*pi,
+                            LauncherConstants.GAINS.k_d / 2*pi,
                             0.02)
                         
     def updateInputs(self, inputs: LauncherIO.LauncherIOInputs) -> None:
