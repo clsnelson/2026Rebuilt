@@ -35,10 +35,10 @@ class ClimberSubsystem(StateSubsystem):
         :param io: The climber IO implementation (ClimberIOTalonFX for real hardware, ClimberIOSim for simulation)
         """
         super().__init__("Climber", self.SubsystemState.STOW)
-        
+
         self._io: Final[ClimberIO] = io
         self._inputs = ClimberIO.ClimberIOInputs()
-        
+
         # Alert for disconnected motor
         self._motor_disconnected_alert = Alert("Climber motor is disconnected.", Alert.AlertType.kError)
 
@@ -46,10 +46,10 @@ class ClimberSubsystem(StateSubsystem):
         """Called periodically to update inputs and log data."""
         # Update inputs from hardware/simulation
         self._io.update_inputs(self._inputs)
-        
+
         # Log inputs to PyKit
         Logger.processInputs("Climber", self._inputs)
-        
+
         # Update alerts
         self._motor_disconnected_alert.set(not self._inputs.motor_connected)
 
@@ -62,15 +62,12 @@ class ClimberSubsystem(StateSubsystem):
         if not super().set_desired_state(desired_state):
             return
 
-        # Get motor voltage for this state
-        motor_voltage = self._state_configs.get(
+        motor_position = self._state_configs.get(
             desired_state,
             (0.0)
         )
 
-        # Set motor voltage through IO layer
-        self._io.set_motor_voltage(motor_voltage)
+        self._io.set_position(motor_position)
 
-    def get_position(self) -> float:
-        return self._io.get_position()
-    
+    #def get_position(self) -> float:
+        #return self._io.get_position()

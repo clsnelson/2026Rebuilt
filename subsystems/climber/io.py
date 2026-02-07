@@ -4,12 +4,12 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import VoltageOut
+from phoenix6.controls import PositionVoltage
 from phoenix6.hardware import TalonFX
 from pykit.autolog import autolog
 from wpilib.simulation import DCMotorSim
 from wpimath.system.plant import DCMotor, LinearSystemId
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians
+from wpimath.units import radians, radians_per_second, volts, amperes, celsius, radiansToRotations
 from wpimath.controller import PIDController
 
 from constants import Constants
@@ -38,8 +38,8 @@ class ClimberIO(ABC):
         """Update the inputs with current hardware/simulation state."""
         pass
 
-    def set_motor_voltage(self, voltage: volts) -> None:
-        """Set the motor output voltage."""
+    def set_position(self, radians: float) -> None:
+        """Set the climber position"""
         pass
 
 class ClimberIOTalonFX(ClimberIO):
@@ -78,8 +78,7 @@ class ClimberIOTalonFX(ClimberIO):
         )
         self._motor.optimize_bus_utilization()
 
-        # Voltage control request
-        self._voltage_request: Final[VoltageOut] = VoltageOut(0)
+        self._position_request: PositionVoltage(0)
 
     def update_inputs(self, inputs: ClimberIO.ClimberIOInputs) -> None:
         """Update inputs with current motor and servo state."""
@@ -100,13 +99,13 @@ class ClimberIOTalonFX(ClimberIO):
         inputs.motor_current = self._current.value_as_double
         inputs.motor_temperature = self._temperature.value_as_double
 
-    def set_motor_voltage(self, voltage: volts) -> None:
-        """Set the motor output voltage."""
-        self._voltage_request.output = voltage
-        self._motor.set_control(self._voltage_request)
+    def set_position(self, radians: float) -> None:
+        """Set the motor position."""
+        self._position_request = PositionVoltage(radiansToRotations(radians))
+        self._motor.set_control(self._position_request)
 
-    def get_position(self) -> float:
-        return self._motor.get_position().value
+    #def get_position(self) -> float:
+        #return self._motor.get_position().value
 
 
 class ClimberIOSim(ClimberIO):
@@ -147,7 +146,7 @@ class ClimberIOSim(ClimberIO):
         else:
             self._controller.reset()
 
-        self.set_motor_voltage(self._motor_applied_volts)
+        self._climber_sim.setInputVoltage(max(-12.0, min(self._motor_applied_volts, 12.0)))
         self._climber_sim.update(0.02)  # 20ms periodic
 
         # Update inputs
@@ -162,15 +161,9 @@ class ClimberIOSim(ClimberIO):
         self._closed_loop = False
         self._motor_applied_volts = output
 
-    def set_position(self, position):
+    def set_position(self, radians: float) -> None:
         self._closed_loop = True
-        self._controller.getSetpoint(rotationsToRadians(position))
+        self._controller.setSetpoint(radians)
 
-    def get_position(self) -> float:
-        return self._motor_position
-
-    def set_motor_voltage(self, voltage: volts) -> None:
-        """Set the motor output voltage (simulated)."""
-        self._motor_applied_volts = max(-12.0, min(12.0, voltage))
-        # Simple velocity model: voltage -> velocity (with some damping)
-        self._motor_velocity = self._motor_applied_volts * 10.0  # Adjust multiplier as needed
+    #def get_position(self) -> float:
+        #return self._motor_position

@@ -55,7 +55,7 @@ class Constants:
             )
         VOLTAGE_INWARDS = None
         VOLTAGE_OUTWARDS = None
-        CLIMB_FULL_THRESHOLD = None
+        CLIMB_FULL_THRESHOLD = 100.0
         SUPPLY_CURRENT = 30.0
         MOMENT_OF_INERTIA = 0.01
 
