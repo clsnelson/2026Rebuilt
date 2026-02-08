@@ -6,7 +6,6 @@ from phoenix6.configs.config_groups import Slot0Configs
 from robotpy_apriltag import AprilTagFieldLayout, AprilTagField
 from wpilib import RobotBase
 from wpimath.geometry import Pose2d
-from wpimath.geometry import Pose2d
 
 from robot_config import currentRobot, Robot
 
@@ -48,6 +47,9 @@ class Constants:
         # to avoid "CAN: Message not found: Module N" errors from pykit logging.
         POWER_DISTRIBUTION_MODULE_ID: Final[int | None] = None
 
+    class GeneralConstants:
+        GAME_PIECE_WEIGHT = 0.215
+
     class ClimberConstants:
         GEAR_RATIO = None
         GAINS = None
@@ -60,22 +62,24 @@ class Constants:
 
     class IntakeConstants:
         GEAR_RATIO = None
+        GAINS: Slot0Configs = None
         GAINS = None
         SUPPLY_CURRENT = None
-        INSIDE_FRAME_ANGLE = None
+        MOMENT_OF_INERTIA = None
 
     class LauncherConstants:
         GEAR_RATIO = None
-        GAINS = None
+        GAINS: Slot0Configs = None
         SUPPLY_CURRENT = None
-        INSIDE_FRAME_ANGLE = None
+        MOMENT_OF_INERTIA = None
+        FLYWHEEL_RADIUS = None
 
 
     class FeederConstants:
         GEAR_RATIO = None
-        GAINS = None
+        GAINS: Slot0Configs = None
         SUPPLY_CURRENT = None
-        INSIDE_FRAME_ANGLE = None
+        MOMENT_OF_INERTIA = None
 
     class VisionConstants:
         FRONT = "limelight-front"
@@ -103,23 +107,12 @@ class Constants:
                 .with_k_s(0.0)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
-)
+        )
     SUPPLY_CURRENT = 35
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
         HUB_HEIGHT = 1.3860018  # hub height - initial height of shooter (17.433 inches) (in meters)    class TurretConstants:
-        GAINS = (Slot0Configs()
-                .with_k_p(1.0)
-                .with_k_i(0.0)
-                .with_k_d(0.0)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
-                .with_k_a(0.0)
-            )
-        GEAR_RATIO = 170/36
-        SUPPLY_CURRENT = 40
-        MOI = .455
 
     class GoalLocations:
         BLUE_HUB = Pose2d(4.625594, 4.034536, 0)
@@ -177,41 +170,42 @@ def _init_hardware_configs():
             # Intake
             Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
             Constants.IntakeConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.1)
+                .with_k_p(0.3)
                 .with_k_i(0.0)
-                .with_k_d(0.0)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
+                .with_k_d(0.006)
+                .with_k_s(0.9)
+                .with_k_v(0.07)
                 .with_k_a(0.0)
             )
             Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes
-            Constants.IntakeConstants.INSIDE_FRAME_ANGLE = 45.0  # Degrees (example value)
+            Constants.IntakeConstants.MOMENT_OF_INERTIA = 0.0067
 
             # Launcher
-            Constants.LauncherConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
+            Constants.LauncherConstants.GEAR_RATIO = 1.25  # Adjust based on actual gear ratio
             Constants.LauncherConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.1)
+                .with_k_p(0.175)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
+                .with_k_s(0.45)
+                .with_k_v(0.1)
                 .with_k_a(0.0)
             )
             Constants.LauncherConstants.SUPPLY_CURRENT = 30.0  # Amperes
-            Constants.LauncherConstants.INSIDE_FRAME_ANGLE = 45.0  # Degrees (example value)
+            Constants.LauncherConstants.MOMENT_OF_INERTIA =  0.0030700826
+            Constants.LauncherConstants.FLYWHEEL_RADIUS = 2.0 * 0.0254
 
             # Feeder
             Constants.FeederConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
             Constants.FeederConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.1)
+                .with_k_p(.2)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
+                .with_k_s(0.3)
+                .with_k_v(0.127)
                 .with_k_a(0.0)
             )
             Constants.FeederConstants.SUPPLY_CURRENT = 30.0  # Amperes
-            Constants.FeederConstants.INSIDE_FRAME_ANGLE = 45.0  # Degrees (example value)
-
+            Constants.FeederConstants.MOMENT_OF_INERTIA = 0.0067
+            
 # Initialize hardware configs at module load time
 _init_hardware_configs()
