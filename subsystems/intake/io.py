@@ -131,7 +131,7 @@ class IntakeIOSim(IntakeIO):
             Constants.IntakeConstants.GEAR_RATIO
         )
         self._simMotor = DCMotorSim(linearSystem, self._motorType, [0, 0])
-        self._closedLoop = False
+        self._closedLoop = True
 
         self._motorPosition: float = 0.0
         self._motorVelocity: float = 0.0
