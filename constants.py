@@ -11,7 +11,6 @@ from robot_config import currentRobot, Robot
 
 
 class Constants:
-    tuningMode: Final[bool] = False
 
     class Mode(Enum):
         # Running on a real robot.
