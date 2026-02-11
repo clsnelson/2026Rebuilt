@@ -78,4 +78,4 @@ class HoodSubsystem(Subsystem):
 
     def rotate_manually(self, axis: float):
         target_velocity = axis * Constants.HoodConstants.MAX_MANUAL_VELOCITY
-        self._io.set_velocity(target_velocity)
+        self.io.set_velocity(target_velocity)
