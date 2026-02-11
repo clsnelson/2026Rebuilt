@@ -98,6 +98,7 @@ class Constants:
         GEAR_RATIO = 170/36
         SUPPLY_CURRENT = 40
         MOI = .455
+        MAX_MANUAL_VELOCITY = 20
         
     class HoodConstants:
         GEAR_RATIO = 68/3
