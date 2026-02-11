@@ -111,6 +111,7 @@ class Constants:
                 .with_k_a(0.0)
         )
     SUPPLY_CURRENT = 35
+    MAX_MANUAL_VELOCITY = 20
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed

@@ -5,7 +5,7 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import PositionVoltage
+from phoenix6.controls import PositionVoltage, VelocityVoltage
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import InvertedValue
 from phoenix6.signals import NeutralModeValue
@@ -46,6 +46,13 @@ class HoodIO(ABC):
 
     def set_position(self, rotation: Rotation2d) -> None:
         """set rotation value (0-1) for the motor to go to."""
+
+    def set_velocity(self, velocity: float) -> None:
+        """
+        Set the hood velocity in radians per second.
+        Args:
+            velocity: The velocity in radians per second to set the hood to.
+        """
 
 # pylint: disable=too-many-instance-attributes
 class HoodIOTalonFX(HoodIO):
@@ -95,6 +102,7 @@ class HoodIOTalonFX(HoodIO):
 
         # Voltage control request
         self.position_request = PositionVoltage(0)
+        self.velocity_request = VelocityVoltage(0)
 
     def update_inputs(self, inputs: HoodIO.HoodIOInputs) -> None:
         """Update inputs with current motor state."""
@@ -120,6 +128,11 @@ class HoodIOTalonFX(HoodIO):
     def set_position(self, rotation: Rotation2d) -> None:
         """Set the position."""
         self.hood_motor.set_control(self.position_request)
+
+    def set_velocity(self, velocity: float) -> None:
+        """Set the velocity."""
+        self.velocity_request = VelocityVoltage(velocity)
+        self.hood_motor.set_control(self.velocity_request)
 
 class HoodIOSim(HoodIO):
     """Sim version of HoodIO."""
@@ -167,3 +180,7 @@ class HoodIOSim(HoodIO):
         """Set the position."""
         self.closed_loop = True
         self.controller.setSetpoint(rotation.radians())
+
+    def set_velocity(self, velocity: float) -> None:
+        self.closed_loop = True
+        self.controller.setSetpoint(velocity)
