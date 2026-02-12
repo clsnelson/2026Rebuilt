@@ -85,7 +85,6 @@ class RobotContainer:
                     # Note: Constants.CanIDs.CLIMB_TALON is automatically set based on detected robot (Larry vs Comp)
                     climber_io = ClimberIOTalonFX(
                         Constants.CanIDs.CLIMB_TALON,  # Different CAN ID for Larry vs Comp
-                        Constants.ClimberConstants.SERVO_PORT,
                         climber_motor_config
                     )
 
@@ -145,13 +144,8 @@ class RobotContainer:
 
                 self.turret = TurretSubsystem(TurretIOSim(), lambda: self.drivetrain.get_state().pose)
 
-                # Create climber only if it exists on this robot
-                if has_subsystem("climber"):
-                    # Create climber subsystem with simulation IO
-                    self.climber = ClimberSubsystem(ClimberIOSim())
-                    print("Climber, Present")
-                else:
-                    print("Climber subsystem not available on this robot")
+                self.climber = ClimberSubsystem(ClimberIOSim())
+                print("Climber, Present")
 
                 if has_subsystem("feeder"):
                     self.feeder = FeederSubsystem(FeederIOSim())
@@ -301,6 +295,14 @@ class RobotContainer:
             print("turret to depot")
             self._function_controller.b().onTrue(self.turret.runOnce(lambda: self.turret.rotate_to_goal(self.turret.Goal.OUTPOST)))
             print("turret to outpost")
+
+        self._function_controller.povUp().onTrue(
+            self.climber.set_desired_state_command(self.climber.SubsystemState.EXTEND)
+        )
+
+        self._function_controller.povDown().onTrue(
+            self.climber.set_desired_state_command(self.climber.SubsystemState.STOW)
+        )
 
     def get_autonomous_command(self) -> commands2.Command:
         return self._auto_chooser.getSelected()
