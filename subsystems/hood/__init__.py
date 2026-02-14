@@ -29,11 +29,13 @@ class HoodSubsystem(StateSubsystem):
         AIMBOT = auto()
         STOW = auto()
         PASS = auto()
+        MANUAL = auto()
 
     _state_configs: dict[SubsystemState, tuple[bool, float]] = {
         SubsystemState.AIMBOT: (True, 0.0),
         SubsystemState.STOW: (False, Constants.HoodConstants.STOW),
-        SubsystemState.PASS: (False, Constants.HoodConstants.PASSING)
+        SubsystemState.PASS: (False, Constants.HoodConstants.PASSING),
+        SubsystemState.MANUAL: (False, 0.0)
 
     }
 
@@ -106,5 +108,6 @@ class HoodSubsystem(StateSubsystem):
         """For advantage scope modelling (placeholder)."""
 
     def rotate_manually(self, axis: float): # Axis is the value of the X-axis from a joystick
+        self.set_desired_state(self.SubsystemState.MANUAL)
         target_velocity = axis * Constants.HoodConstants.MAX_MANUAL_VELOCITY
         self.io.set_velocity(target_velocity)

@@ -61,8 +61,8 @@ class TurretIO(ABC):
 
 class TurretIOTalonFX(TurretIO):
     
-    def __init__(self, motor_id: int) -> None:
-        self.turret_motor: Final[TalonFX] = TalonFX(motor_id, "rio")
+    def __init__(self) -> None:
+        self.turret_motor: Final[TalonFX] = TalonFX(Constants.CanIDs.TURRET_TALON, "rio")
 
         self.controller = PIDController(
             Constants.TurretConstants.GAINS.k_p,

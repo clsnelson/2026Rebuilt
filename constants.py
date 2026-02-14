@@ -123,6 +123,7 @@ class Constants:
         STOW = 0
         PASSING = 0.1
         MAX_MANUAL_VELOCITY = 20
+        HARDCODED_POSITION = 0.1
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
@@ -180,18 +181,17 @@ def _init_hardware_configs():
             Constants.ClimberConstants.MOMENT_OF_INERTIA = 0.3
 
             # Intake
-            Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
+            Constants.IntakeConstants.GEAR_RATIO = 3.8333  # Adjust based on actual gear ratio
             Constants.IntakeConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.45)
+                .with_k_p(0.5)
                 .with_k_i(0.0)
-                .with_k_d(0.003)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
+                .with_k_d(0.0)
+                .with_k_s(0.17)
+                .with_k_v(0.14)
                 .with_k_a(0.0)
             )
             Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.IntakeConstants.MOMENT_OF_INERTIA = 0.0067
-            Constants.IntakeConstants.FEED_FORWARD = 1.1
 
             # Launcher
             Constants.LauncherConstants.GEAR_RATIO = 1.25  # Adjust based on actual gear ratio

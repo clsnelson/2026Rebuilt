@@ -7,7 +7,7 @@ from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
 from phoenix6.controls import VelocityVoltage, PositionVoltage, VoltageOut
 from phoenix6.hardware import TalonFX
-from phoenix6.signals import NeutralModeValue
+from phoenix6.signals import NeutralModeValue, InvertedValue
 from pykit.autolog import autolog
 from wpimath.units import radians, radians_per_second, amperes, celsius
 from wpilib.simulation import DCMotorSim
@@ -65,6 +65,7 @@ class IntakeIOTalonFX(IntakeIO):
         _motor_config.slot0 = Constants.IntakeConstants.GAINS
         _motor_config.motor_output.neutral_mode = NeutralModeValue.COAST
         _motor_config.feedback.sensor_to_mechanism_ratio = Constants.IntakeConstants.GEAR_RATIO
+        _motor_config.motor_output.inverted = InvertedValue.CLOCKWISE_POSITIVE
 
         tryUntilOk(5, lambda: self._motor.configurator.apply(_motor_config, 0.25))
 
@@ -88,7 +89,6 @@ class IntakeIOTalonFX(IntakeIO):
 
         # Velocity Voltage control request
         self._velocityRequest: Final[VelocityVoltage] = VelocityVoltage(0)
-        self._velocityRequest.feed_forward = Constants.IntakeConstants.FEED_FORWARD
 
         # Voltage control request
         self._voltageRequest: Final[VoltageOut] = VoltageOut(0)
@@ -119,7 +119,6 @@ class IntakeIOTalonFX(IntakeIO):
             self._motor.set_control(self._voltageRequest)
         else:
             self._velocityRequest.velocity = rps
-            self._velocityRequest.feed_forward = Constants.IntakeConstants.FEED_FORWARD
             self._motor.set_control(self._velocityRequest)
 
 class IntakeIOSim(IntakeIO):
