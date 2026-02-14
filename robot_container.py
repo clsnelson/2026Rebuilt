@@ -69,7 +69,11 @@ class RobotContainer:
                     )
 
                 if has_subsystem("turret"):
-                    self.turret = TurretSubsystem(TurretIOTalonFX(), lambda: self.drivetrain.get_state().pose)
+                    turret_io = TurretIOTalonFX()
+                    self.turret = TurretSubsystem(turret_io, lambda: self.drivetrain.get_state().pose)
+                    print("Turret, present")
+                else:
+                    print("Turret subsystem not available on this robot")
 
                 # Create climber only if it exists on this robot
                 if has_subsystem("climber"):
@@ -116,9 +120,7 @@ class RobotContainer:
                     print("Intake subsystem not available on this robot")
 
                 if has_subsystem("hood"):
-                    hood_io = HoodIOTalonFX(
-                        Constants.CanIDs.HOOD_TALON,
-                    )
+                    hood_io = HoodIOTalonFX()
 
                     self.hood = HoodSubsystem(hood_io, lambda: self.drivetrain.get_state().pose)
                     print("we hood") # hood is present
@@ -158,6 +160,23 @@ class RobotContainer:
                     print("Intake, Present")
                 else:
                     print("Intake subsystem not available on this robot")
+
+                if has_subsystem("turret"):
+                    turret_io = TurretIOSim()
+                    self.turret = TurretSubsystem(turret_io, lambda: self.drivetrain.get_state().pose)
+                    print("Turret, present")
+                else:
+                    print("Turret subsystem not available on this robot")
+
+                if has_subsystem("hood"):
+                    hood_io = HoodIOSim()
+
+                    self.hood = HoodSubsystem(hood_io, lambda: self.drivetrain.get_state().pose)
+                    print("we hood") # hood is present
+                else:
+                    print("straight out the suburbs") # hood is not present
+
+                
 
         self.superstructure = Superstructure(
             self.drivetrain, self.vision, self.climber, self.intake
@@ -291,15 +310,17 @@ class RobotContainer:
             print("turret to outpost")
 
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(
-                self.turret.runOnce(lambda: self.turret.rotate_manually(self._function_controller.getRightX()))
+                self.turret.runOnce(lambda: self.turret.rotate_manually(self._function_controller.getRightX())),
             )
-            Trigger(lambda: self._function_controller.getRightTriggerAxis() > 0.75).onTrue(
-                self.turret.runOnce(lambda: self.turret.rotate_to_goal(self.turret.Goal.NONE))
+            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(
+                self.turret.runOnce(lambda: self.turret.rotate_to_goal(self.turret.Goal.NONE)),
             )
 
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(
-                self.hood.runOnce(lambda: self.hood.rotate_manually(self._function_controller.getRightY()))
+                self.hood.runOnce(lambda: self.hood.rotate_manually(self._function_controller.getRightY())),
             )
+        else:
+            print("Turret subsystem not available on this robot, unable to bind turret buttons")
         
         if self.climber is not None:
             self._function_controller.povUp().onTrue(
@@ -323,6 +344,14 @@ class RobotContainer:
         """Get the intake subsystem if it exists on this robot."""
         return self.intake
 
+    def get_turret(self) -> Optional[TurretSubsystem]:
+        """Get the turret subsystem if it exists on this robot."""
+        return self.turret
+
+    def get_hood(self) -> Optional[HoodSubsystem]:
+        """Get the hood subsystem if it exists on this robot."""
+        return self.hood
+
     def has_climber(self) -> bool:
         """Check if climber subsystem exists on this robot."""
         return self.climber is not None
@@ -330,3 +359,11 @@ class RobotContainer:
     def has_intake(self) -> bool:
         """Check if intake subsystem exists on this robot."""
         return self.intake is not None
+
+    def has_turret(self) -> bool:
+        """Check if turret subsystem exists on this robot."""
+        return self.turret is not None
+
+    def has_hood(self) -> bool:
+        """Check if hood subsystem exists on this robot."""
+        return self.hood is not None
