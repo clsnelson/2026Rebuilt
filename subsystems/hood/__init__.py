@@ -54,9 +54,6 @@ class HoodSubsystem(StateSubsystem):
         self.launch_speed =  12.26  # meters per second, will be passed in from shooter later
         self.distance = 1.0000000
         self.angle = 1.0000000
-        self.hub_pose = Constants.FieldConstants.HUB_POSE if not (
-            AutoBuilder.shouldFlip()) else FlippingUtil.flipFieldPose(
-            Constants.FieldConstants.HUB_POSE)
 
     def update_angle(self) -> None:
         """Updates hood angle."""
@@ -72,6 +69,10 @@ class HoodSubsystem(StateSubsystem):
 
     def periodic(self) -> None:
         """Runs stuff periodically (every 20 ms)."""
+        self.alliance = DriverStation.getAlliance()
+        self.hub_pose = Constants.FieldConstants.HUB_POSE if not (
+            AutoBuilder.shouldFlip()) else FlippingUtil.flipFieldPose(
+            Constants.FieldConstants.HUB_POSE)
         self.io.update_inputs(self.inputs)
         Logger.processInputs("Hood", self.inputs)
         #Logger.recordOutput("Hood/Calculated Angle", self.angle)
