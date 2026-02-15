@@ -44,17 +44,20 @@ class HoodSubsystem(StateSubsystem):
 
         self.io = io
         self.alliance = DriverStation.getAlliance()
-        self.set_desired_state(HoodSubsystem.SubsystemState.MANUAL)
+        self.set_desired_state(HoodSubsystem.SubsystemState.STOW)
 
         self.robot_pose_supplier = robot_pose_supplier
 
         self.inputs = HoodIO.HoodIOInputs()
         self.hood_disconnected_alert = Alert("Hood motor is disconnected.", Alert.AlertType.kError)
 
-        self.hub_pose = Constants.FieldConstants.HUB_POSE  # blue hub
+        #self.hub_pose = Constants.FieldConstants.HUB_POSE  # blue hub
         self.launch_speed =  12.26  # meters per second, will be passed in from shooter later
         self.distance = 1.0000000
         self.angle = 1.0000000
+        self.hub_pose = Constants.FieldConstants.HUB_POSE if not (
+            AutoBuilder.shouldFlip()) else FlippingUtil.flipFieldPose(
+            Constants.FieldConstants.HUB_POSE)
 
     def update_angle(self) -> None:
         """Updates hood angle."""
@@ -72,24 +75,20 @@ class HoodSubsystem(StateSubsystem):
         """Runs stuff periodically (every 20 ms)."""
         self.io.update_inputs(self.inputs)
         Logger.processInputs("Hood", self.inputs)
-        Logger.recordOutput("Hood/Calculated Angle", self.angle)
-        Logger.recordOutput("Hood/Distance", self.distance)
+        #Logger.recordOutput("Hood/Calculated Angle", self.angle)
+        #Logger.recordOutput("Hood/Distance", self.distance)
 
-        self.distance = (self.robot_pose_supplier()
+        if self.get_current_state() == self.SubsystemState.AIMBOT:
+            self.distance = (self.robot_pose_supplier()
                          .translation().distance(self.hub_pose.translation()))
+            self.update_angle()
+            print(f"Distance: {self.distance}, Angle: {self.angle}")
+            self.io.set_position(degreesToRotations(self.angle))
 
-        self.io.set_position(0.0)
-        #self.io.set_position(degreesToRotations(self.angle))
-        #self.io.set_position(Rotation2d.fromDegrees(self.angle)) # convert degrees to rotations
+        if self.get_current_state() == self.SubsystemState.STOW or self.get_current_state() == self.SubsystemState.PASS:
+            self.io.set_position(self.get_current_state())
 
         self.hood_disconnected_alert.set(not self.inputs.hood_connected)
-
-        if StateSubsystem.get_current_state(self) == self.SubsystemState.AIMBOT:
-            self.update_angle() #locks aimbot to aimbot state
-
-        self.hub_pose = Constants.FieldConstants.HUB_POSE if not (
-            AutoBuilder.shouldFlip()) else FlippingUtil.flipFieldPose(
-            Constants.FieldConstants.HUB_POSE)
 
     def set_desired_state(self, desired_state: SubsystemState) -> None:
         """set state"""
@@ -99,8 +98,11 @@ class HoodSubsystem(StateSubsystem):
         auto_aim, hood_pos = self._state_configs.get(desired_state, 0.0)
 
         if auto_aim:
+            self.distance = (self.robot_pose_supplier()
+                         .translation().distance(self.hub_pose.translation()))
+            self.update_angle()
             hood_pos = degreesToRotations(self.angle)
-        #self.io.set_position(hood_pos)
+        self.io.set_position(hood_pos)
 
     def get_current_state(self) -> SubsystemState | None:
         """get state"""

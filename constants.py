@@ -140,10 +140,10 @@ class Constants:
         )
         SUPPLY_CURRENT = 35
         # positions
-        STOW = 0
-        PASSING = 0.1
+        STOW = 0.0
+        PASSING = 0.09
         MAX_MANUAL_VELOCITY = 20
-        HARDCODED_POSITION = 0.1
+        HARDCODED_POSITION = 0.05
         MAX_ROTATIONS = 0.092285
 
     class FieldConstants:

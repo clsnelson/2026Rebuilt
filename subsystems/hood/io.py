@@ -129,10 +129,6 @@ class HoodIOTalonFX(HoodIO):
 
     def set_position(self, rotation: float) -> None:
         """Set the position."""
-        rotation = self.target_position
-        """rotation = Constants.HoodConstants.HARDCODED_POSITION #hardcoded for testing
-        rotation = rotation + self._zero_position #zero position is the position of the hood when the robot is in the stow position
-        """
         if rotation > Constants.HoodConstants.MAX_ROTATIONS + self._zero_position:
             rotation = Constants.HoodConstants.MAX_ROTATIONS + self._zero_position
             print("Hood position is too high, setting to max")

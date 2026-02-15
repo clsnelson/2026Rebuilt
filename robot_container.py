@@ -340,10 +340,10 @@ class RobotContainer:
         
         if self.hood is not None:
             self._function_controller.povUp().onTrue(
-                InstantCommand(lambda: self.hood.increase_angle())
+                InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.AIMBOT))
             )
             self._function_controller.povDown().onTrue(
-                InstantCommand(lambda: self.hood.decrease_angle())
+                InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.STOW))
             )
         else:
             print("Hood subsystem not available on this robot, unable to bind hood buttons")
