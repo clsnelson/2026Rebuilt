@@ -2,15 +2,13 @@ from enum import auto, Enum
 from typing import Optional
 
 from commands2 import Command, Subsystem, cmd
-from ntcore import NetworkTableInstance
 from wpilib import DriverStation
-from wpimath.geometry import Pose3d
 
 from constants import Constants
+from subsystems import StateSubsystem
+from subsystems.climber import ClimberSubsystem
 from subsystems.intake import IntakeSubsystem
 from subsystems.swerve import SwerveSubsystem
-from subsystems.vision import VisionSubsystem
-from subsystems.climber import ClimberSubsystem
 
 
 class Superstructure(Subsystem):
@@ -33,15 +31,14 @@ class Superstructure(Subsystem):
     # Map each goal to each subsystem state to reduce code complexity
     _goal_to_states: dict[Goal,
             tuple[
-                Optional[VisionSubsystem.SubsystemState]
+                Optional[StateSubsystem.SubsystemState]
             ]] = {
-        Goal.DEFAULT: (IntakeSubsystem.SubsystemState.STOP, ClimberSubsystem.SubsystemState.STOW, VisionSubsystem.SubsystemState.ALL_ESTIMATES),
-        Goal.CLIMBREADY: (IntakeSubsystem.SubsystemState.STOP, ClimberSubsystem.SubsystemState.EXTEND, VisionSubsystem.SubsystemState.ALL_ESTIMATES),
-        Goal.CLIMB: (IntakeSubsystem.SubsystemState.STOP, ClimberSubsystem.SubsystemState.STOW, VisionSubsystem.SubsystemState.ALL_ESTIMATES),
+        Goal.DEFAULT: (IntakeSubsystem.SubsystemState.STOP),
+        Goal.CLIMB: (IntakeSubsystem.SubsystemState.STOP),
 
     }
 
-    def __init__(self, drivetrain: SwerveSubsystem, vision: VisionSubsystem, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
+    def __init__(self, drivetrain: SwerveSubsystem, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
         """
         Constructs the superstructure using instance of each subsystem.
         Subsystems are optional to support robots that don't have all hardware.
@@ -57,7 +54,6 @@ class Superstructure(Subsystem):
         """
         super().__init__()
         self.drivetrain = drivetrain
-        self.vision = vision
         self.climber = climber
         self.intake = intake
 
@@ -76,11 +72,6 @@ class Superstructure(Subsystem):
 
     def _set_goal(self, goal: Goal) -> None:
         self._goal = goal
-
-        vision_state = self._goal_to_states.get(goal, (None, None, None, None))
-
-        if vision_state:
-            self.VisionSubsystem.set_desired_state(vision_state)
 
         # Handle intake if present
         if self.intake is not None:

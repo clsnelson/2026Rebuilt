@@ -5,7 +5,7 @@ from math import *
 from phoenix6.configs.config_groups import Slot0Configs
 from robotpy_apriltag import AprilTagFieldLayout, AprilTagField
 from wpilib import RobotBase
-from wpimath.geometry import Pose2d, Rotation2d
+from wpimath.geometry import Pose2d, Transform3d, Rotation2d, Rotation3d
 
 from robot_config import currentRobot, Robot
 
@@ -93,6 +93,25 @@ class Constants:
     class VisionConstants:
         FRONT = "limelight-front"
         # LAUNCHER = "limelight-al"
+
+        robot_to_front = Transform3d(
+            0.2,
+            0.0,
+            0.0,
+            Rotation3d(
+                0.0,
+                0.0,
+                0.0
+            )
+        )
+
+        max_ambiguity = 0.3
+        max_z_error = 0.75
+
+        # StdDev baselines, for 1-meter distance and 1 tag
+        # (Adjusted automatically based on distance and # of tags)
+        linear_std_dev_baseline = 0.02 # Meters
+        angular_std_dev_baseline = 0.06 # Radians
 
     class TurretConstants:
         GAINS = (Slot0Configs()
