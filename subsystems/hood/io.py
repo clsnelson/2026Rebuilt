@@ -17,6 +17,7 @@ from wpimath.geometry import Rotation2d
 from wpimath.system.plant import DCMotor
 from wpimath.system.plant import LinearSystemId
 from wpimath.units import radians, radiansToRotations, volts, amperes, rotationsToRadians
+from math import pi
 
 from constants import Constants
 from util import tryUntilOk
@@ -161,9 +162,9 @@ class HoodIOSim(HoodIO):
         )
 
         self.controller = PIDController(
-            Constants.HoodConstants.GAINS.k_p,
-            Constants.HoodConstants.GAINS.k_i,
-            Constants.HoodConstants.GAINS.k_d
+            Constants.HoodConstants.GAINS.k_p / (2*pi),
+            Constants.HoodConstants.GAINS.k_i / (2*pi),
+            Constants.HoodConstants.GAINS.k_d / (2*pi)
         )
 
         self._zero_position = 0.0  # Sim starts at 0

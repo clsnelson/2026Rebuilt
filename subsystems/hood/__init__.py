@@ -57,6 +57,9 @@ class HoodSubsystem(StateSubsystem):
 
     def update_angle(self) -> None:
         """Updates hood angle."""
+
+        """ 
+        Calculation through kinematic equations
         self.angle = degrees(atan(  # calculates angle
             (self.launch_speed ** 2 +
              sqrt(
@@ -65,6 +68,15 @@ class HoodSubsystem(StateSubsystem):
                  (9.80665 * self.distance ** 2 +
                   3 * Constants.FieldConstants.HUB_HEIGHT * self.launch_speed ** 2))))
             / (9.80665 * self.distance)))
+        """
+        
+        #power regression interpolation based on testing data, may need to be updated (gooder)
+
+        self.angle = degrees(
+            float("4.84713e-010") * (self.distance ** 3.89802) 
+            if self.distance < 84 
+            else float("1.05564e-033") * (self.distance ** 15.57268) 
+        )
 
 
     def periodic(self) -> None:
@@ -127,3 +139,10 @@ class HoodSubsystem(StateSubsystem):
         print("increasing angle")
         self.io.target_position += 0.01
         self.io.set_position(.01)
+
+    def skibiditest(self):
+        self.distance = 67
+
+        self.update_angle()
+        hood_pos = degreesToRotations(self.angle)
+        self.io.set_position(hood_pos)
