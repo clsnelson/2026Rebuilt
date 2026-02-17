@@ -138,11 +138,4 @@ class HoodSubsystem(StateSubsystem):
         self.set_desired_state(self.SubsystemState.MANUAL)
         print("increasing angle")
         self.io.target_position += 0.01
-        self.io.set_position(.01)
-
-    def skibiditest(self):
-        self.distance = 67
-
-        self.update_angle()
-        hood_pos = degreesToRotations(self.angle)
-        self.io.set_position(hood_pos)
+        self.io.set_position(0.01)

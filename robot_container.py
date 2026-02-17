@@ -295,11 +295,6 @@ class RobotContainer:
             )
         )
 
-        self._driver_controller.b().whileTrue(
-            InstantCommand(lambda: self.hood.skibiditest())
-        )
-
-
         self._driver_controller.start().onTrue(
             self.drivetrain.runOnce(
                 lambda: self.drivetrain.seed_field_centric()))
