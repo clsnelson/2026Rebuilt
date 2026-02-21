@@ -76,7 +76,7 @@ class RobotContainer:
                         VisionIOLimelight(
                             Constants.VisionConstants.FRONT,
                             Constants.VisionConstants.robot_to_front,
-                            self.drivetrain.get_state().pose.rotation
+                            lambda: self.drivetrain.get_state().pose.rotation(),
                         ),
                     )
 
@@ -147,7 +147,7 @@ class RobotContainer:
                     VisionIOLimelight(
                         Constants.VisionConstants.FRONT,
                         Constants.VisionConstants.robot_to_front,
-                        self.drivetrain.get_state().pose.rotation
+                        lambda: self.drivetrain.get_state().pose.rotation(),
                     ),
                 )
 
