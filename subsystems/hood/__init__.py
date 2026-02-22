@@ -71,6 +71,7 @@ class HoodSubsystem(StateSubsystem):
             self.interpolate()
             self.io.set_position(self.target)
 
+
         self.hood_disconnected_alert.set(not self.inputs.hood_connected)
 
         Logger.processInputs("Hood", self.inputs)

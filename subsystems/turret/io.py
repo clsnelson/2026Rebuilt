@@ -131,7 +131,7 @@ class TurretIOTalonFX(TurretIO):
             radians: The position in radians to set the turret to.
         """
         #commenting out for no jitter
-        """rotations = radiansToRotations(radians) + self._zero_position
+        rotations = radiansToRotations(radians) + self._zero_position
         self.target_position = rotations
         if rotations > Constants.TurretConstants.MAX_ROTATIONS + self._zero_position:
             rotations = Constants.TurretConstants.MAX_ROTATIONS + self._zero_position
@@ -141,8 +141,7 @@ class TurretIOTalonFX(TurretIO):
             print("Turret position is too low, setting to zero")
         print(f"Turret setting position to {rotations}, zero position is {self._zero_position}")
         self.position_request = PositionVoltage(rotations)
-        self.turret_motor.set_control(self.position_request)"""
-        pass
+        self.turret_motor.set_control(self.position_request)
 
     def set_velocity(self, velocity: float) -> None:
         """

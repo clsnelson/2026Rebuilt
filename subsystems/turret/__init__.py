@@ -5,7 +5,7 @@ from typing import Final, Callable
 from constants import Constants
 from subsystems import Subsystem
 from subsystems.turret.io import TurretIO
-from math import *
+from math import atan, pi
 from wpimath.geometry import Pose2d, Rotation2d
 from wpilib import DriverStation
 from subsystems import StateSubsystem
@@ -26,8 +26,6 @@ class TurretSubsystem(StateSubsystem):
 
     }
 
-    # On the reference there's something about a CANrange here and I don't know what that means so I'm leaving it.
-    
     def __init__(self, io: TurretIO, robot_pose_supplier: Callable[[], Pose2d]) -> None:
         super().__init__("Turret", self.SubsystemState.MANUAL)
 
@@ -41,6 +39,9 @@ class TurretSubsystem(StateSubsystem):
         self.independent_rotation = Rotation2d(0)
         self.current_radians = 0.0
 
+        self.x = 6.7
+        self.y = 4.1
+
     def periodic(self):
 
         # Update inputs from hardware/simulation
@@ -48,11 +49,12 @@ class TurretSubsystem(StateSubsystem):
 
         # Log inputs to PyKit
         Logger.processInputs("Turret", self._inputs)
+        Logger.recordOutput("Turret/X Distance", self.x)
+        Logger.recordOutput("Turret/Y Distance", self.y)
 
         # Update alerts
         self.turret_disconnected_alert.set(not self._inputs.turret_connected)
 
-        # TODO will be implemented later for calculating the current position of the turret independent of the robot's rotation
         self.current_radians = self.robot_pose_supplier().rotation().radians() + self.independent_rotation.radians()
 
         if self.get_current_state() != self.SubsystemState.MANUAL:
@@ -65,16 +67,21 @@ class TurretSubsystem(StateSubsystem):
         xdist = 0.0
         match self.get_current_state():
             case self.SubsystemState.HUB:
-                xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_HUB.X()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_HUB.X())
-                ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_HUB.Y()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_HUB.Y())
+                xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_HUB.X()) if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_HUB.X())
+                ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_HUB.Y()) if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_HUB.Y())
             case self.SubsystemState.OUTPOST:
-                xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_OUTPOST_PASS.X()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_OUTPOST_PASS.X())
-                ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_OUTPOST_PASS.Y()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_OUTPOST_PASS.Y())
+                xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_OUTPOST_PASS.X()) if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_OUTPOST_PASS.X())
+                ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_OUTPOST_PASS.Y()) if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_OUTPOST_PASS.Y())
             case self.SubsystemState.DEPOT:
-                xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_DEPOT_PASS.X()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_DEPOT_PASS.X())
-                ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_DEPOT_PASS.Y()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_DEPOT_PASS.Y())
+                xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_DEPOT_PASS.X()) if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_DEPOT_PASS.X())
+                ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_DEPOT_PASS.Y()) if DriverStation.getAlliance() == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_DEPOT_PASS.Y())
             case self.SubsystemState.MANUAL:
                 return 0.0
+            
+        self.x= xdist
+        self.y = ydist
+        
+
         print(f"Turret: X distance: {xdist}, Y distance: {ydist}")
         if xdist == 0.0:
             return 0.0
@@ -85,7 +92,7 @@ class TurretSubsystem(StateSubsystem):
         
         self.set_desired_state(target)
         if self.get_current_state() != self.SubsystemState.MANUAL:
-            target_radians = self.get_radians_to_goal()
+            target_radians = self.get_radians_to_goal() - self.current_radians
             print(f"Turret: Target radians: {target_radians} Subsystem state: {self.get_current_state()}")
             self._io.set_position(target_radians)
 
