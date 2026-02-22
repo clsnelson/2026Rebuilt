@@ -135,7 +135,6 @@ class HoodIOTalonFX(HoodIO):
         elif rotation < self._zero_position:
             rotation = self._zero_position
         
-        print(f"Hood setting position to {rotation}, zero position is {self._zero_position}")
         self.hood_motor.set_control(self.position_request.with_position(rotation))
 
     def set_velocity(self, velocity: float) -> None:
