@@ -148,9 +148,9 @@ class LauncherIOSim(LauncherIO):
         self._motorAppliedVolts: float = 0.0
 
         self._controller = PIDController(
-                            LauncherConstants.GAINS.k_p / 2*pi,
-                            LauncherConstants.GAINS.k_i / 2*pi,
-                            LauncherConstants.GAINS.k_d / 2*pi,
+                            LauncherConstants.GAINS.k_p / (2*pi),
+                            LauncherConstants.GAINS.k_i / (2*pi),
+                            LauncherConstants.GAINS.k_d / (2*pi),
                             0.02)
                         
     def updateInputs(self, inputs: LauncherIO.LauncherIOInputs) -> None:

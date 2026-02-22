@@ -60,6 +60,7 @@ class RobotContainer:
         self.feeder: Optional[FeederSubsystem] = None
         self.launcher: Optional[LauncherSubsystem] = None
         self.turret: Optional[TurretSubsystem] = None
+        self.hood: Optional[HoodSubsystem] = None
 
         match Constants.currentMode:
             case Constants.Mode.REAL:
@@ -218,8 +219,8 @@ class RobotContainer:
         NamedCommands.registerCommand("Aim to Outpost", self.superstructure.set_goal_command(Superstructure.Goal.AIMOUTPOST))
         NamedCommands.registerCommand("Aim to Hub", self.superstructure.set_goal_command(Superstructure.Goal.AIMHUB))
 
-        NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state(self.climber.SubsystemState.EXTEND))
-        NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state(self.climber.SubsystemState.STOW))
+        #NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state(self.climber.SubsystemState.EXTEND))
+        #NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state(self.climber.SubsystemState.STOW))
 
         # Build AutoChooser
         self._auto_chooser: LoggedDashboardChooser[commands2.Command] = LoggedDashboardChooser("Auto")
@@ -351,9 +352,7 @@ class RobotContainer:
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(
                 InstantCommand(lambda: self.hood.rotate_manually(self._function_controller.getRightY()))
             )
-            self._function_controller.povUp().onTrue(
-                InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.AIMBOT))
-            )
+           
             #self._function_controller.getLeftTriggerAxis().onTrue(
         else:
             print("Turret or hood subsystem not available on this robot, unable to bind turret buttons")
@@ -361,6 +360,9 @@ class RobotContainer:
         if self.hood is not None:
             self._function_controller.povDown().onTrue(
                 InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.STOW))
+            )
+            self._function_controller.povUp().onTrue(
+                InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.AIMBOT))
             )
         else:
             print("Hood subsystem not available on this robot, unable to bind hood buttons")

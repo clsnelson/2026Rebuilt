@@ -112,10 +112,10 @@ class Constants:
 
     class TurretConstants:
         GAINS = (Slot0Configs()
-                .with_k_p(35)
+                .with_k_p(3.5)
                 .with_k_i(0.0)
-                .with_k_d(4)
-                .with_k_s(0.4569140625)
+                .with_k_d(0.0)
+                .with_k_s(0.5)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
