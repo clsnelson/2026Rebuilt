@@ -56,7 +56,9 @@ class HoodSubsystem(StateSubsystem):
     def interpolate(self) -> None:
         """Updates hood angle."""
         if self.distance <= Constants.HoodConstants.MAX_DISTANCE_FOR_SLOW_LAUNCH:
-            self.target = 0.0000840628 * (self.distance ** 6.40933) 
+            self.target = 0.0000840628 * (self.distance ** 6.40933)
+        elif self.distance <= Constants.HoodConstants.MAX_DISTANCE_FOR_MEDIUM_LAUNCH and self.distance > Constants.HoodConstants.MAX_DISTANCE_FOR_SLOW_LAUNCH:
+            self.target = 0.03637695313 # Using a hardcoded value for this small range
         else:
             self.target = 0.0000139591 * (self.distance ** 5.1281) 
 

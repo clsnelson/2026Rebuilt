@@ -123,8 +123,10 @@ class Constants:
         SUPPLY_CURRENT = 40
         MOI = .455
         MAX_ROTATIONS = 0.865967
-        MAX_MANUAL_VELOCITY = 20 # rad/sec
-        
+        MAX_MANUAL_VELOCITY = 20  # rad/sec
+        # Only switch to other side of center when goal is at least this many degrees past middle
+        CROSS_MIDDLE_HYSTERESIS_DEGREES = 5.0
+
     class HoodConstants:
         GEAR_RATIO = 68/3
         GAINS = (Slot0Configs()
@@ -143,6 +145,7 @@ class Constants:
         HARDCODED_POSITION = 0.05
         MAX_ROTATIONS = 0.054687567
         MAX_DISTANCE_FOR_SLOW_LAUNCH = 2.55
+        MAX_DISTANCE_FOR_MEDIUM_LAUNCH = 2.90
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
