@@ -560,7 +560,7 @@ def _handle_fuel_collision(a: Fuel, b: Fuel) -> None:
     b.add_impulse(normal * -impulse)
 
 
-_CELL_SIZE = 0.25
+_CELL_SIZE = _FUEL_RADIUS * 2.2
 _GRID_COLS = math.ceil(_FIELD_LENGTH / _CELL_SIZE)
 _GRID_ROWS = math.ceil(_FIELD_WIDTH / _CELL_SIZE)
 _FUEL_DIAM_SQ = (_FUEL_RADIUS * 2) ** 2
