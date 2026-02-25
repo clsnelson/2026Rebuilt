@@ -31,7 +31,7 @@ class TurretSubsystem(StateSubsystem):
         super().__init__("Turret", self.SubsystemState.MANUAL)
 
         self._io: Final[TurretIO] = io
-        self._inputs = TurretIO.TurretIOInputs()
+        self.inputs = TurretIO.TurretIOInputs()
         self.set_desired_state(TurretSubsystem.SubsystemState.MANUAL)
         self.robot_pose_supplier = robot_pose_supplier
 
@@ -47,17 +47,17 @@ class TurretSubsystem(StateSubsystem):
     def periodic(self):
 
         # Update inputs from hardware/simulation
-        self._io.update_inputs(self._inputs)
+        self._io.update_inputs(self.inputs)
 
         # Log inputs to PyKit
-        Logger.processInputs("Turret", self._inputs)
+        Logger.processInputs("Turret", self.inputs)
         Logger.recordOutput("Turret/X Distance", self.x)
         Logger.recordOutput("Turret/Y Distance", self.y)
         Logger.recordOutput("Turret/Robot Current Radians", self.current_radians)
         Logger.recordOutput("Turret/Target Radians", self.target_radians)
 
         # Update alerts
-        self.turret_disconnected_alert.set(not self._inputs.turret_connected)
+        self.turret_disconnected_alert.set(not self.inputs.turret_connected)
 
         self.current_radians = self.robot_pose_supplier().rotation().radians() + self.independent_rotation.radians()
 
@@ -129,7 +129,7 @@ class TurretSubsystem(StateSubsystem):
             desired_in_range -= 2 * pi
 
         current_turret = rotationsToRadians(
-            self._inputs.turret_position - self._inputs.turret_zero_position
+            self.inputs.turret_position - self.inputs.turret_zero_position
         )
         middle = max_radians / 2
         hysteresis_rad = deg_to_rad(Constants.TurretConstants.CROSS_MIDDLE_HYSTERESIS_DEGREES)
