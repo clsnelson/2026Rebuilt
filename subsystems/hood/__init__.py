@@ -105,4 +105,4 @@ class HoodSubsystem(StateSubsystem):
         Gets the articulated component pose for AdvantageScope.
         :param turret: Component pose of the turret
         """
-        return Pose3d(-0.032810, 0, 0.465032, Rotation3d(0, rotationsToRadians(self.target), 0)).rotateAround(turret.translation(), turret.rotation())
+        return Pose3d(-0.032810, 0, 0.465032, Rotation3d(0, rotationsToRadians(self.inputs.hood_position), 0)).rotateAround(turret.translation(), turret.rotation())
