@@ -206,16 +206,16 @@ class RobotContainer:
                 state.pose.rotation()
             )
         self.fuel_sim = FuelSim()
-        self.fuel_sim.spawn_starting_fuel()
-        self.fuel_sim.register_robot(
-            inchesToMeters(27),
-            inchesToMeters(27),
-            inchesToMeters(5),
-            lambda: self.drivetrain.get_state().pose,
-            get_field_speeds
-        )
-        self.fuel_sim.enable_air_resistance()
         if RobotBase.isSimulation():
+            self.fuel_sim.spawn_starting_fuel()
+            self.fuel_sim.register_robot(
+                inchesToMeters(27),
+                inchesToMeters(27),
+                inchesToMeters(5),
+                lambda: self.drivetrain.get_state().pose,
+                get_field_speeds
+            )
+            self.fuel_sim.enable_air_resistance()
             self.fuel_sim.start()
 
         self.superstructure = Superstructure(
