@@ -106,17 +106,22 @@ class StateSubsystem(Subsystem):
     def on_state_change(self, old: SubsystemState, new: SubsystemState) -> None:
         """Called when the state changes. Override if needed."""
 
-    def set_desired_state(self, desired_state: SubsystemState) -> None:
+    def set_desired_state(self, desired_state: SubsystemState) -> bool:
         """
         Sets the desired state of the subsystem.
 
-        IT IS REQUIRED TO CALL `super().set_desired_state()` TO MODIFY STATES.
-        DO NOT IMPLEMENT YOUR OWN.
+        IT IS REQUIRED TO CALL `super().set_desired_state()` TO MODIFY STATES
+        IN CHILD CLASSES BEFORE APPLYING ANY OUTPUTS.
+
+        :returns: True if the state actually changed, otherwise False
         """
-        if not self._locked and desired_state != self._current_state:
-            old_state = self._current_state
-            self._current_state = desired_state
-            self.on_state_change(old_state, desired_state)
+        if self._locked or desired_state == self._current_state:
+            return False
+
+        old_state = self._current_state
+        self._current_state = desired_state
+        self.on_state_change(old_state, desired_state)
+        return True
 
     def set_desired_state_command(self, state: SubsystemState) -> Command:
         """Sets the desired state of the subsystem with an InstantCommand."""
