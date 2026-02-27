@@ -430,13 +430,14 @@ class RobotContainer:
             if self.hood is not None:
                 hood_pose = self.hood.get_component_pose(turret_pose)
             else:
-                hood_pose = Pose3d(0, 0, 0)
+                hood_pose = Pose3d()
         else:
-            turret_pose = Pose3d(0, 0, 0)
+            turret_pose = Pose3d()
+            hood_pose = Pose3d()
 
         if self.climber is not None:
             climber_pose = self.climber.get_component_pose()
         else:
-            climber_pose = Pose3d(0, 0, 0)
+            climber_pose = Pose3d()
 
         return [turret_pose, hood_pose, climber_pose]
