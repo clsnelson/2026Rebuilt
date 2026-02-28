@@ -79,15 +79,14 @@ class RobotContainer:
                         VisionIOLimelight(
                             Constants.VisionConstants.FRONT,
                             Constants.VisionConstants.robot_to_front,
-                            lambda: self.drivetrain.get_state().pose.rotation(),
+                            lambda: self.drivetrain.get_cached_state().pose.rotation(),
                         ),
                     )
 
                 # Hood, launcher, turret use turret position (robot center + offset) for distance/aim
-                #turret_pose = make_turret_pose_supplier(lambda: self.drivetrain.get_state().pose)
                 if has_subsystem("turret"):
                     turret_io = TurretIOTalonFX()
-                    self.turret = TurretSubsystem(turret_io, lambda: self.drivetrain.get_state().pose)
+                    self.turret = TurretSubsystem(turret_io, lambda: self.drivetrain.get_cached_state().pose)
                     print("Turret, present")
                 else:
                     print("Turret subsystem not available on this robot")
@@ -124,7 +123,7 @@ class RobotContainer:
 
                 if has_subsystem("launcher"):
                     launcher_io = LauncherIOTalonFX()
-                    self.launcher = LauncherSubsystem(launcher_io, lambda: self.drivetrain.get_state().pose)
+                    self.launcher = LauncherSubsystem(launcher_io, lambda: self.drivetrain.get_cached_state().pose)
                     print("Launcher, Present")
                 else:
                     print("Launcher subsystem not available on this robot")
@@ -138,7 +137,7 @@ class RobotContainer:
 
                 if has_subsystem("hood"):
                     hood_io = HoodIOTalonFX()
-                    self.hood = HoodSubsystem(hood_io, lambda: self.drivetrain.get_state().pose)
+                    self.hood = HoodSubsystem(hood_io, lambda: self.drivetrain.get_cached_state().pose)
                     print("we hood")  # hood is present
                 else:
                     print("straight out the suburbs") # hood is not present
@@ -151,12 +150,12 @@ class RobotContainer:
                     VisionIOLimelight(
                         Constants.VisionConstants.FRONT,
                         Constants.VisionConstants.robot_to_front,
-                        lambda: self.drivetrain.get_state().pose.rotation(),
+                        lambda: self.drivetrain.get_cached_state().pose.rotation(),
                     ),
                 )
 
                 # hood, turret, launcher use turret position (robot center + offset) for distance/aim
-                turret_pose_sim = make_turret_pose_supplier(lambda: self.drivetrain.get_state().pose)
+                turret_pose_sim = make_turret_pose_supplier(lambda: self.drivetrain.get_cached_state().pose)
                 self.hood = HoodSubsystem(HoodIOSim(), turret_pose_sim)
                 self.turret = TurretSubsystem(TurretIOSim(), turret_pose_sim)
 
@@ -197,7 +196,7 @@ class RobotContainer:
 
         # Fuel simulation (for simulation testing)
         def get_field_speeds():
-            state = self.drivetrain.get_state()
+            state = self.drivetrain.get_cached_state()
             speeds = state.speeds
             return ChassisSpeeds.fromRobotRelativeSpeeds(
                 speeds.vx,
@@ -212,7 +211,7 @@ class RobotContainer:
                 inchesToMeters(27),
                 inchesToMeters(27),
                 inchesToMeters(5),
-                lambda: self.drivetrain.get_state().pose,
+                lambda: self.drivetrain.get_cached_state().pose,
                 get_field_speeds
             )
             self.fuel_sim.enable_air_resistance()

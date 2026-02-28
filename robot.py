@@ -99,7 +99,7 @@ class Dwayne(LoggedRobot):
         CommandScheduler.getInstance().run()
         self._match_time_pub.set(Timer.getMatchTime())
         if self.container.drivetrain is not None:
-            self.container._field.setRobotPose(self.container.drivetrain.get_state().pose)
+            self.container._field.setRobotPose(self.container.drivetrain.get_cached_state().pose)
 
         Logger.recordOutput("Components", self.container.get_component_poses())
 
