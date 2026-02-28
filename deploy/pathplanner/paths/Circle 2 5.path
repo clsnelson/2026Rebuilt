@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3309036144578312,
+        "y": 5.958277108433736
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.0193493975903616,
+        "y": 4.821795180722892
+      },
+      "isLocked": false,
+      "linkedName": "Circle 2 W4"
+    },
+    {
+      "anchor": {
+        "x": 0.4239036144578311,
+        "y": 0.691120481927711
+      },
+      "prevControl": {
+        "x": 2.150481927710843,
+        "y": 1.2593614457831324
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Circle 2 W5"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.75,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -179.64632684075357
+  },
+  "reversed": false,
+  "folder": "Circle 2",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 179.6762984750798
+  },
+  "useDefaultConstraints": true
+}
