@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.166759036144578,
-        "y": 6.9964096385542165
+        "x": 3.0465542168674697,
+        "y": 7.466301204819277
       },
       "isLocked": false,
       "linkedName": "Circle 5 W4"
+    },
+    {
+      "anchor": {
+        "x": 2.6968674698795176,
+        "y": 4.1333493975903615
+      },
+      "prevControl": {
+        "x": 3.3908939720505735,
+        "y": 4.1502768732530715
+      },
+      "nextControl": {
+        "x": 2.2488313253012047,
+        "y": 4.122421686746987
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,23 +36,28 @@
         "y": 4.1333493975903615
       },
       "prevControl": {
-        "x": 3.101192771084338,
-        "y": 4.209843373493976
+        "x": 1.9647108433734939,
+        "y": 4.1442771084337355
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9568904593639611,
+      "rotationDegrees": 179.58765892762634
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6907597535934253,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.8492813141683757,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 6.0,
+        "maxVelocity": 0.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1200.0,
         "nominalVoltage": 12.0,

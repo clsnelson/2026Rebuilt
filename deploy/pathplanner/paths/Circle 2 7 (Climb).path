@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.007396213505053,
-        "y": 2.9049190333900485
+        "x": 3.1230481927710843,
+        "y": 3.084289156626505
       },
       "isLocked": false,
       "linkedName": "Circle 2 W6"
+    },
+    {
+      "anchor": {
+        "x": 2.9263493975903616,
+        "y": 3.204493975903614
+      },
+      "prevControl": {
+        "x": 3.14995619534034,
+        "y": 3.0926905770286237
+      },
+      "nextControl": {
+        "x": 2.7027425998403833,
+        "y": 3.3162973747786046
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 3.3246987951807228
       },
       "prevControl": {
-        "x": 2.2152810418685083,
-        "y": 3.1326685446437104
+        "x": 2.0412048192771084,
+        "y": 3.3137710843373496
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,18 +46,18 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7526501766784451,
+      "waypointRelativePos": 1.5,
       "rotationDegrees": 179.70379042997584
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.4123203285420856,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 6.0,
+        "maxVelocity": 0.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1200.0,
         "nominalVoltage": 12.0,

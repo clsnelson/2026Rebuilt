@@ -17,16 +17,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Launch"
-                }
-              }
-            ]
+            "name": "Launch"
           }
         },
         {
@@ -36,15 +29,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Default"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Circle 5 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
           }
         }
       ]
