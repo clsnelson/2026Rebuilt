@@ -240,9 +240,9 @@ class RobotContainer:
         NamedCommands.registerCommand("Aim to Depot", self.superstructure.set_goal_command(Superstructure.Goal.AIMDEPOT))
         NamedCommands.registerCommand("Aim to Outpost", self.superstructure.set_goal_command(Superstructure.Goal.AIMOUTPOST))
         NamedCommands.registerCommand("Aim to Hub", self.superstructure.set_goal_command(Superstructure.Goal.AIMHUB))
-
-        #NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state(self.climber.SubsystemState.EXTEND))
-        #NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state(self.climber.SubsystemState.STOW))
+        NamedCommands.registerCommand("Intake", self.superstructure.set_goal_command(Superstructure.Goal.INTAKE))
+        NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state_command(self.climber.SubsystemState.EXTEND))
+        NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state_command(self.climber.SubsystemState.STOW))
 
         # Build AutoChooser
         self._auto_chooser: LoggedDashboardChooser[commands2.Command] = LoggedDashboardChooser("Auto")
@@ -252,6 +252,7 @@ class RobotContainer:
             if auto ==".DS_Store":
                 continue
             self._auto_chooser.addOption(auto, PathPlannerAuto(auto, False))
+            print(auto, "initialised")
             self._auto_chooser.addOption(auto + " (Mirrored)", PathPlannerAuto(auto, True))
         self._auto_chooser.setDefaultOption("None", cmd.none())
         self._auto_chooser.addOption("Basic Leave",

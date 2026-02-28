@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle 3 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Depot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle 3 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Outpost"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle 3 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle 3 4 (Climb)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Extend"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Circle 3 5 (Climb)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Stow"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.1997710843373495,
+        "y": 5.958277108433736
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.8937951807228917,
+        "y": 5.9364216867469874
+      },
+      "isLocked": false,
+      "linkedName": "Circle 2 W2"
+    },
+    {
+      "anchor": {
+        "x": 0.4457590361445781,
+        "y": 5.958277108433736
+      },
+      "prevControl": {
+        "x": 0.694732337761504,
+        "y": 5.935643171923105
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Circle 2 W3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1200.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.75,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Circle 2",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -179.0289780689208
+  },
+  "useDefaultConstraints": true
+}
