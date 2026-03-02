@@ -9,7 +9,7 @@ from pykit.networktables.nt4Publisher import NT4Publisher
 from pykit.wpilog.wpilogwriter import WPILOGWriter
 from wpilib import DriverStation, Timer
 
-import robot_config
+from robot_config import currentRobot, has_subsystem
 
 # Workaround for PyKit: ntcore IntegerPublisher and wpiutil DataLog expect int64,
 # but LogTable.getTimestamp() can exceed int64 max. Patch at source to fix all
@@ -37,8 +37,17 @@ class Dwayne(LoggedRobot):
     def __init__(self, period = 0.02) -> None:
         super().__init__()
 
-        Logger.recordMetadata("Robot", robot_config.currentRobot.name)
+        Logger.recordMetadata("Robot", currentRobot.name)
         Logger.recordMetadata("Mode", Constants.currentMode.name)
+
+        # Record subsystem metadata
+        Logger.recordMetadata("ClimberPresent", str(has_subsystem("climber")))
+        Logger.recordMetadata("FeederPresent", str(has_subsystem("feeder")))
+        Logger.recordMetadata("HoodPresent", str(has_subsystem("hood")))
+        Logger.recordMetadata("IntakePresent", str(has_subsystem("intake")))
+        Logger.recordMetadata("LauncherPresent", str(has_subsystem("intake")))
+        Logger.recordMetadata("TurretPresent", str(has_subsystem("turret")))
+        Logger.recordMetadata("VisionPresent", str(has_subsystem("vision")))
 
         match Constants.currentMode:
             # Running on a real robot, log to a USB stick ("/U/logs")
@@ -97,8 +106,6 @@ class Dwayne(LoggedRobot):
 
         dashboard_nt = NetworkTableInstance.getDefault().getTable("Elastic")
         self._match_time_pub = dashboard_nt.getFloatTopic("Match Time").publish()
-
-        print("Robot initialized")
 
     def robotPeriodic(self) -> None:
         CommandScheduler.getInstance().run()

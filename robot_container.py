@@ -10,6 +10,7 @@ from pathplannerlib.util import FlippingUtil
 from phoenix6 import swerve
 from phoenix6.configs import TalonFXConfiguration
 from phoenix6.configs.config_groups import NeutralModeValue, MotorOutputConfigs, FeedbackConfigs
+from pykit.logger import Logger
 from pykit.networktables.loggeddashboardchooser import LoggedDashboardChooser
 from wpilib import Field2d, SmartDashboard, XboxController, getDeployDirectory, RobotBase
 from wpimath.geometry import Rotation2d, Pose3d
@@ -87,9 +88,6 @@ class RobotContainer:
                 if has_subsystem("turret"):
                     turret_io = TurretIOTalonFX()
                     self.turret = TurretSubsystem(turret_io, lambda: self.drivetrain.get_cached_state().pose)
-                    print("Turret, present")
-                else:
-                    print("Turret subsystem not available on this robot")
 
                 # Create climber only if it exists on this robot
                 if has_subsystem("climber"):
@@ -110,37 +108,22 @@ class RobotContainer:
 
                     # Create climber subsystem with real hardware IO
                     self.climber = ClimberSubsystem(climber_io)
-                    print("Climber, Present")
-                else:
-                    print("Climber subsystem not available on this robot")
 
                 if has_subsystem("feeder"):
                     feeder_io = FeederIOTalonFX()
                     self.feeder = FeederSubsystem(feeder_io)
-                    print("Feeder, Present")
-                else:
-                    print("Feeder subsystem not available on this robot")
 
                 if has_subsystem("launcher"):
                     launcher_io = LauncherIOTalonFX()
                     self.launcher = LauncherSubsystem(launcher_io, lambda: self.drivetrain.get_cached_state().pose)
-                    print("Launcher, Present")
-                else:
-                    print("Launcher subsystem not available on this robot")
 
                 if has_subsystem("intake"):
                     intake_io = IntakeIOTalonFX()
                     self.intake = IntakeSubsystem(intake_io)
-                    print("Intake, Present")
-                else:
-                    print("Intake subsystem not available on this robot")
 
                 if has_subsystem("hood"):
                     hood_io = HoodIOTalonFX()
                     self.hood = HoodSubsystem(hood_io, lambda: self.drivetrain.get_cached_state().pose)
-                    print("we hood")  # hood is present
-                else:
-                    print("straight out the suburbs") # hood is not present
 
             case Constants.Mode.SIM:
                 # Sim robot, instantiate physics sim IO implementations (if available)
@@ -160,39 +143,23 @@ class RobotContainer:
                 self.turret = TurretSubsystem(TurretIOSim(), turret_pose_sim)
 
                 self.climber = ClimberSubsystem(ClimberIOSim())
-                print("Climber, Present")
 
                 if has_subsystem("feeder"):
                     self.feeder = FeederSubsystem(FeederIOSim())
-                    print("Feeder, Present")
-                else:
-                    print("Feeder subsystem not available on this robot")
 
                 if has_subsystem("launcher"):
                     self.launcher = LauncherSubsystem(LauncherIOSim(), turret_pose_sim)
-                    print("Launcher, Present")
-                else:
-                    print("Launcher subsystem not available on this robot")
 
                 if has_subsystem("intake"):
                     self.intake = IntakeSubsystem(IntakeIOSim())
-                    print("Intake, Present")
-                else:
-                    print("Intake subsystem not available on this robot")
 
                 if has_subsystem("turret"):
                     turret_io = TurretIOSim()
                     self.turret = TurretSubsystem(turret_io, turret_pose_sim)
-                    print("Turret, present")
-                else:
-                    print("Turret subsystem not available on this robot")
 
                 if has_subsystem("hood"):
                     hood_io = HoodIOSim()
                     self.hood = HoodSubsystem(hood_io, turret_pose_sim)
-                    print("we hood")  # hood is present
-                else:
-                    print("straight out the suburbs") # hood is not present
 
         # Fuel simulation (for simulation testing)
         def get_field_speeds():
@@ -251,8 +218,8 @@ class RobotContainer:
             auto = auto.removesuffix(".auto")
             if auto ==".DS_Store":
                 continue
+            print(f'Adding "{auto}"...')
             self._auto_chooser.addOption(auto, PathPlannerAuto(auto, False))
-            print(auto, "initialised")
             self._auto_chooser.addOption(auto + " (Mirrored)", PathPlannerAuto(auto, True))
         self._auto_chooser.setDefaultOption("None", cmd.none())
         self._auto_chooser.addOption("Basic Leave",

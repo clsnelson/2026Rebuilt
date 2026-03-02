@@ -9,6 +9,7 @@ from enum import Enum, auto
 from typing import Final
 import uuid
 
+from pykit.logger import Logger
 from wpilib import RobotController
 
 
@@ -30,19 +31,19 @@ def get_mac_address():
 def detect_robot() -> Robot:
     """
     Detect which robot we're running on.
-    
+
     Detection methods (in order of preference):
     1. MAC address of RoboRIO (most reliable)
     2. Hostname (if set differently on each robot)
     3. Environment variable ROBOT_NAME
-    
+
     :return: The detected robot
     """
     print("Attempting to detect which robot we are connected to")
     # Method 1: Check MAC address (RoboRIO MAC addresses are unique)
     try:
         mac_address = get_mac_address() or "Undefined"
-        print(f"MAC address: {mac_address}")
+        Logger.recordMetadata("MACAddress", mac_address)
         # Replace these with your actual MAC addresses
         # You can find MAC addresses via: ssh admin@roborio-XXXX-frc.local "cat /sys/class/net/eth0/address"
         LARRY_MAC_ADDRESSES = [
@@ -53,7 +54,7 @@ def detect_robot() -> Robot:
             "00:08:f2:83:d8:07",  # Replace with Comp's actual MAC
             # Add other possible MAC addresses for Comp if it has multiple interfaces
         ]
-        
+
         if mac_address in LARRY_MAC_ADDRESSES:
             print("Mac address is for Larry")
             return Robot.LARRY
@@ -62,7 +63,7 @@ def detect_robot() -> Robot:
             return Robot.COMP
     except Exception:
         pass
-    
+
     # Method 2: Check hostname
     try:
         hostname = socket.gethostname().lower()
@@ -72,7 +73,7 @@ def detect_robot() -> Robot:
             return Robot.COMP
     except Exception:
         pass
-    
+
     # Method 3: Check environment variable (useful for testing)
     import os
     robot_name = os.environ.get("ROBOT_NAME", "").upper()
@@ -80,7 +81,7 @@ def detect_robot() -> Robot:
         return Robot.LARRY
     if robot_name == "COMP":
         return Robot.COMP
-    
+
     # Fallback: Default to COMP for competition, or set to LARRY for testing
     # Change this default based on your preference
     return Robot.COMP  # or Robot.LARRY if you want to default to test robot
@@ -93,7 +94,7 @@ currentRobot: Final[Robot] = detect_robot()
 def has_subsystem(subsystem_name: str) -> bool:
     """
     Check if a subsystem is available on the current robot.
-    
+
     :param subsystem_name: Name of the subsystem (e.g., "climber", "intake")
     :return: True if the subsystem exists on the current robot, False otherwise
     """
@@ -108,7 +109,7 @@ def has_subsystem(subsystem_name: str) -> bool:
         # "climber",
         # "intake",
     }
-    
+
     COMP_SUBSYSTEMS = {
         "drivetrain",  # Always present
         "vision",      # Always present
@@ -120,7 +121,7 @@ def has_subsystem(subsystem_name: str) -> bool:
         #"climber",     # Competition robot has climber
         # Add other Comp subsystems as needed
     }
-    
+
     if currentRobot == Robot.COMP:
         return subsystem_name.lower() in COMP_SUBSYSTEMS
     else:  # LARRY or UNKNOWN defaults to LARRY
