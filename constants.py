@@ -122,17 +122,17 @@ class Constants:
 
     class TurretConstants:
         GAINS = (Slot0Configs()
-                .with_k_p(8.3)
+                .with_k_p(3.067)
                 .with_k_i(0.0)
-                .with_k_d(1.29)
-                .with_k_s(0.469)
+                .with_k_d(1.85)
+                .with_k_s(0.725)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
-        GEAR_RATIO = 170/36
+        GEAR_RATIO = 25/6
         SUPPLY_CURRENT = 40
         MOI = 0.093001732
-        MAX_ROTATIONS = 0.865967
+        MAX_ROTATIONS = 0.969
         MAX_MANUAL_VELOCITY = 20  # rad/sec
         SETPOINT_TOLERANCE = 0.167
         MM_VELOCITY = 1
