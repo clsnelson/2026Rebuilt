@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Aim to Hub"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Start Outpost to Shoot"
@@ -20,18 +14,6 @@
           "type": "named",
           "data": {
             "name": "Launch"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Default"
           }
         }
       ]
