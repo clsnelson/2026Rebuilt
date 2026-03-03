@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.723843373495117,
+        "y": 7.357024096385541
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.986108433734939,
+        "y": 6.9964096385542165
+      },
+      "isLocked": false,
+      "linkedName": "Recollect 1"
+    },
+    {
+      "anchor": {
+        "x": 6.292084337349398,
+        "y": 6.373530120481928
+      },
+      "prevControl": {
+        "x": 6.293450301204677,
+        "y": 7.0851972891566275
+      },
+      "nextControl": {
+        "x": 6.290718373494119,
+        "y": 5.661862951807229
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.723843373495117,
+        "y": 4.854578313253012
+      },
+      "prevControl": {
+        "x": 5.737075005736945,
+        "y": 5.357380338389934
+      },
+      "nextControl": {
+        "x": 5.712915662650602,
+        "y": 4.439325301204819
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.723843373495117,
+        "y": 3.040578313253012
+      },
+      "prevControl": {
+        "x": 5.734771084337349,
+        "y": 3.871084337349398
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Recollect 2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.7618374558303844,
+      "rotationDegrees": -90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.75,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

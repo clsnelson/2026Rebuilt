@@ -1,0 +1,95 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.2978915662650605,
+        "y": 5.291686746987953
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.0028433734939757,
+        "y": 7.22589156626506
+      },
+      "isLocked": false,
+      "linkedName": "SNS1"
+    },
+    {
+      "anchor": {
+        "x": 3.997265060240964,
+        "y": 7.466301204819277
+      },
+      "prevControl": {
+        "x": 3.636650602409638,
+        "y": 7.367951807228916
+      },
+      "nextControl": {
+        "x": 4.238456015550397,
+        "y": 7.532080556267303
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.166530120481927,
+        "y": 7.466301204819277
+      },
+      "prevControl": {
+        "x": 4.920940577791551,
+        "y": 7.5130534937593065
+      },
+      "nextControl": {
+        "x": 5.6803346441267495,
+        "y": 7.368489476823912
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.505060240963855,
+        "y": 6.7778554216867475
+      },
+      "prevControl": {
+        "x": 6.577282475756215,
+        "y": 7.160899485121997
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SNS2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.024028268551259,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.00353356890459,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.75,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "PSNS",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 132.754257434105
+  },
+  "useDefaultConstraints": true
+}

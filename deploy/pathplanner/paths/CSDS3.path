@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.175,
+        "y": 5.980132530120482
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.7724197999166175,
+        "y": 5.982256961576168
+      },
+      "isLocked": false,
+      "linkedName": "CSDS2"
+    },
+    {
+      "anchor": {
+        "x": 0.47854216866970445,
+        "y": 5.980132530120482
+      },
+      "prevControl": {
+        "x": 0.816434212205245,
+        "y": 5.979953145199473
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CSDS3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1200.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.75,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "CSDS",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
