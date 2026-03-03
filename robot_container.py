@@ -232,7 +232,7 @@ class RobotContainer:
             swerve.requests.FieldCentric()
             .with_deadband(0)
             .with_rotational_deadband(0)
-            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
+            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE)
             .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
         )
 
@@ -240,7 +240,7 @@ class RobotContainer:
             swerve.requests.RobotCentric()
             .with_deadband(0)
             .with_rotational_deadband(0)
-            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
+            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE)
             .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
         )
 
