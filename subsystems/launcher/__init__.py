@@ -1,13 +1,13 @@
 from enum import IntEnum, auto
 from math import pi
-from typing import Callable, Final
+from typing import Callable, Final, Optional
 
 from pathplannerlib.auto import FlippingUtil, AutoBuilder
 from pykit.logger import Logger
 from wpilib import Alert
 from wpimath.geometry import Pose2d
 
-from constants import Constants, Optional
+from constants import Constants
 from subsystems import StateSubsystem
 from subsystems.launcher.io import LauncherIO, LauncherIOTalonFX, LauncherIOSim
 
