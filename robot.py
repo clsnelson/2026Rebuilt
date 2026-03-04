@@ -79,12 +79,13 @@ class Dwayne(LoggedRobot):
             # Running a physics simulator, log to NT
             case Constants.Mode.SIM:
                 Logger.addDataReciever(NT4Publisher(True))
+                Logger.addDataReciever(WPILOGWriter())
 
             # Replaying a log, set up replay source
             case Constants.Mode.REPLAY:
                 self.useTiming = False
                 Logger.setReplaySource(LogReplaySource())
-                Logger.addDataReciever(WPILOGWriter(None))
+                Logger.addDataReciever(WPILOGWriter())
 
         # Avoid CAN errors from pykit when no PDH/PDP is on the bus (or wrong module ID)
         util._install_safe_power_distribution_logging()
