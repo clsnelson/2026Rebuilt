@@ -209,7 +209,6 @@ class Superstructure(Subsystem):
                                 self._turret_check
                                 and self._hood_check
                                 and self._flywheel_check
-                                and self._time_since_last_goal.get() > 0.5
                         ) or self._checks_override ):
                     self.feeder.unlock()
                     self.feeder.set_desired_state(FeederSubsystem.SubsystemState.INWARD)

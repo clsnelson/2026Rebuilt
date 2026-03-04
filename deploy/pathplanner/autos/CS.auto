@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
         }
