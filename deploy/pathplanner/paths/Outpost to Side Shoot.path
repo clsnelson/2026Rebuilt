@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9886543844697321,
-        "y": 1.552373538009409
+        "x": 1.2103764532171983,
+        "y": 1.3458757631471219
       },
       "isLocked": false,
       "linkedName": "CSOS2"
     },
     {
       "anchor": {
-        "x": 3.2978915662650605,
-        "y": 5.291686746987953
+        "x": 2.313774928774929,
+        "y": 2.3941310541310554
       },
       "prevControl": {
-        "x": 2.7807678835114693,
-        "y": 4.383550312974555
+        "x": 1.325739800148801,
+        "y": 1.4859177155319507
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SNS1"
+      "linkedName": "Shoot Outpost"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 132.754257434105
+    "rotation": -141.31499557227417
   },
   "reversed": false,
   "folder": null,

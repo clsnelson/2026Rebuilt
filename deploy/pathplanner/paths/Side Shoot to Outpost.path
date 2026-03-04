@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2978915662650605,
-        "y": 5.291686746987953
+        "x": 2.313774928774929,
+        "y": 2.3941310541310554
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.297891566267359,
-        "y": 3.7945903614483294
+        "x": 2.3137749287772276,
+        "y": 0.8970346685914321
       },
       "isLocked": false,
-      "linkedName": "SNS1"
+      "linkedName": "Shoot Outpost"
     },
     {
       "anchor": {
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 132.754257434105
+    "rotation": -141.31499557227417
   },
   "useDefaultConstraints": true
 }
