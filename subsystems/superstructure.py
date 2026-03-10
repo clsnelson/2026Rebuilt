@@ -8,13 +8,9 @@ from pathplannerlib.auto import AutoBuilder
 from pykit.logger import Logger
 from wpilib import DriverStation, Timer
 from wpimath.geometry import Pose2d
-from wpimath.kinematics import ChassisSpeeds
 
 from constants import Constants
-from subsystems.aiming import (
-    ShooterAimingTable,
-    get_aiming_parameters,
-)
+from subsystems.aiming import ShooterAimingTable
 from subsystems.feeder import FeederSubsystem
 from subsystems.hood import HoodSubsystem
 from subsystems.intake import IntakeSubsystem
@@ -78,7 +74,7 @@ class Superstructure(Subsystem):
         Goal.LAUNCH: (
             IntakeSubsystem.SubsystemState.INTAKE,
             FeederSubsystem.SubsystemState.INWARD,
-            LauncherSubsystem.SubsystemState.SCORE,
+            None,
             None, None, True
         ),
 
@@ -157,39 +153,25 @@ class Superstructure(Subsystem):
         if DriverStation.isDisabled():
             return
 
-        # Unified aiming: Virtual Goal + LUT setpoints (always when
-        # aiming/launching)
-        if (self._goal_state in (self.Goal.LAUNCH,
-                                 self.Goal.AIMHUB) and
-                self._aim_pose_supplier and self._aiming_table):
-            real_goal = (
-                Constants.GoalLocations.BLUE_HUB
-                if not AutoBuilder.shouldFlip()
-                else Constants.GoalLocations.RED_HUB
-            )
-            field_speeds = (
-                self._drivetrain.get_field_relative_speeds()
-                if self._drivetrain is not None
-                else ChassisSpeeds(0.0, 0.0, 0.0)
-            )
+        # Distance-based aiming (LUT) for hub and passing goals
+        aim_goals = (self.Goal.LAUNCH, self.Goal.AIMHUB,
+                     self.Goal.AIMOUTPOST, self.Goal.AIMDEPOT)
+        if (self._goal_state in aim_goals
+                and self._aim_pose_supplier and self._aiming_table):
+            real_goal = self._goal_pose_for_state(self._goal_state)
             robot_pose = self._aim_pose_supplier()
-            params = get_aiming_parameters(
-                robot_pose=robot_pose,
-                field_speeds=field_speeds,
-                real_goal_pose=real_goal,
-                aiming_table=self._aiming_table,
-            )
             self._distance_to_hub = math.hypot(
                 real_goal.X() - robot_pose.X(),
                 real_goal.Y() - robot_pose.Y(),
             )
-            self._virtual_distance_m = params.virtual_dist_m
+            self._virtual_distance_m = self._distance_to_hub
+            settings = self._aiming_table.get_settings(self._distance_to_hub)
             if self.turret is not None:
-                self.turret.set_target_field_angle(params.turret_angle_rad)
+                self.turret.set_target_field_angle(None)  # aim at real goal
             if self.hood is not None:
-                self.hood.set_aiming_setpoint(params.hood_rotations)
+                self.hood.set_aiming_setpoint(settings["hood"])
             if self.launcher is not None:
-                self.launcher.set_aiming_setpoint(params.rps)
+                self.launcher.set_aiming_setpoint(settings["rpm"])
         else:
             if self.turret is not None:
                 self.turret.set_target_field_angle(None)
@@ -274,6 +256,20 @@ class Superstructure(Subsystem):
             "Superstructure/Feeder Good to activate",
             self._time_since_last_goal.get() > 0.5
         )
+
+    def _goal_pose_for_state(self, goal: Goal) -> Pose2d:
+        """Return the field pose of the target for this goal (hub, outpost, or depot)."""
+        is_red = AutoBuilder.shouldFlip()
+        if goal in (self.Goal.LAUNCH, self.Goal.AIMHUB):
+            return (Constants.GoalLocations.RED_HUB
+                    if is_red else Constants.GoalLocations.BLUE_HUB)
+        if goal == self.Goal.AIMOUTPOST:
+            return (Constants.GoalLocations.RED_OUTPOST_PASS
+                    if is_red else Constants.GoalLocations.BLUE_OUTPOST_PASS)
+        if goal == self.Goal.AIMDEPOT:
+            return (Constants.GoalLocations.RED_DEPOT_PASS
+                    if is_red else Constants.GoalLocations.BLUE_DEPOT_PASS)
+        return Constants.GoalLocations.BLUE_HUB  # fallback
 
     def _set_goal(self, goal: Goal) -> None:
         (intake_state, feeder_state, launcher_state, hood_state,
