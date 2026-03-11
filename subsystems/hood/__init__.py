@@ -106,14 +106,6 @@ class HoodSubsystem(StateSubsystem):
         """get state"""
         return super().get_current_state()
 
-    def rotate_manually(self,
-                        axis: float
-                        ):  # Axis is the value of the X-axis from a joystick
-        """Manually rotates the turret."""
-        self.set_desired_state(self.SubsystemState.MANUAL)
-        target_velocity = axis * Constants.HoodConstants.MAX_MANUAL_VELOCITY
-        self.io.set_velocity(target_velocity)
-
     def get_component_pose(self, turret: Pose3d) -> Pose3d:
         """
         Gets the articulated component pose for AdvantageScope.

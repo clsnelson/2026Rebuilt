@@ -504,34 +504,6 @@ class RobotContainer:
                 )
             )
 
-            self._function_controller.back().onTrue(
-                InstantCommand(
-                    lambda: self.turret.set_desired_state(
-                        self.turret.SubsystemState.MANUAL
-                    )
-                ).alongWith(
-                    InstantCommand(
-                        lambda: self.hood.set_desired_state(
-                            self.hood.SubsystemState.MANUAL
-                        )
-                    )
-                )
-            )
-
-            self._function_controller.back().whileTrue(
-                InstantCommand(
-                    lambda: self.turret.rotate_manually(
-                        self._function_controller.getRightX()
-                    )
-                ).alongWith(
-                    InstantCommand(
-                        lambda: self.hood.rotate_manually(
-                            self._function_controller.getRightY()
-                        )
-                    )
-                )
-            )
-
             self._function_controller.start().onTrue(
                 self.superstructure.override_checks()
             )

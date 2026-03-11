@@ -5,7 +5,7 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import MotionMagicVoltage, VelocityVoltage
+from phoenix6.controls import MotionMagicVoltage
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue, InvertedValue
 from pykit.autolog import autolog
@@ -45,9 +45,6 @@ class TurretIO:
 
     def set_position(self, position: radians) -> None:
         """Set the turret position in position."""
-
-    def set_velocity(self, velocity: radians_per_second) -> None:
-        """Set the turret velocity in position per second."""
 
 # pylint: disable=too-many-instance-attributes
 class TurretIOTalonFX(TurretIO):
@@ -111,7 +108,6 @@ class TurretIOTalonFX(TurretIO):
         self.turret_motor.optimize_bus_utilization()
 
         self.position_request = MotionMagicVoltage(0)
-        self.velocity_request = VelocityVoltage(0)
 
     def update_inputs(self, inputs: TurretIO.TurretIOInputs):
         motor_status = BaseStatusSignal.refresh_all(
@@ -154,19 +150,6 @@ class TurretIOTalonFX(TurretIO):
             .with_limit_reverse_motion(rotations < 0)
         )
 
-    def set_velocity(self, velocity: radians_per_second) -> None:
-        """
-        Set the turret velocity in position per second using closed loop
-        control.
-        """
-        if (velocity > 0 and self.position.value_as_double >=
-                Constants.TurretConstants.MAX_ROTATIONS):
-            velocity = 0
-        elif (velocity < 0 and self.position.value_as_double <=
-              0):
-            velocity = 0
-        self.velocity_request = VelocityVoltage(radiansToRotations(velocity))
-        self.turret_motor.set_control(self.velocity_request)
 
 class TurretIOSim(TurretIO):
     """Simulation implementation for deterministic outputs."""
@@ -189,9 +172,9 @@ class TurretIOSim(TurretIO):
         self.applied_volts: float = 0.0
 
         self.controller = PIDController(
-            Constants.TurretConstants.GAINS.k_p / (2 * pi),
-            Constants.TurretConstants.GAINS.k_i / (2 * pi),
-            Constants.TurretConstants.GAINS.k_d / (2 * pi),
+            Constants.TurretConstants.GAINS_TRAVEL.k_p / (2 * pi),
+            Constants.TurretConstants.GAINS_TRAVEL.k_i / (2 * pi),
+            Constants.TurretConstants.GAINS_TRAVEL.k_d / (2 * pi),
         )
 
         self.target_position = 0.0
@@ -229,14 +212,3 @@ class TurretIOSim(TurretIO):
         self.closed_loop = True
         self.target_position = radiansToRotations(position)
         self.controller.setSetpoint(-position)
-
-    def set_velocity(self, velocity: radians_per_second) -> None:
-        """Set the turret velocity in position per second."""
-        self.closed_loop = True
-        if (velocity > 0 and self._motor_position * (
-                2 * pi) >= Constants.TurretConstants.MAX_ROTATIONS):
-            velocity = 0
-        elif velocity < 0 and self._motor_position * (
-                2 * pi) <= 0:
-            velocity = 0
-        self.controller.setSetpoint(-velocity)

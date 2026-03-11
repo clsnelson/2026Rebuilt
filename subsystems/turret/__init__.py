@@ -193,13 +193,6 @@ class TurretSubsystem(StateSubsystem):
         self.target_radians = field_angle_to_goal
         self._io.set_position(command_turret)
 
-    def rotate_manually(self,
-                        axis: float
-                        ):  # Axis is the value of the X-axis from a joystick
-        """Manually rotates the turret."""
-        target_velocity = axis * Constants.TurretConstants.MAX_MANUAL_VELOCITY
-        self._io.set_velocity(target_velocity)
-
     def get_current_state(self) -> SubsystemState | None:
         """get state"""
         return super().get_current_state()
@@ -214,7 +207,7 @@ class TurretSubsystem(StateSubsystem):
         if auto_aim:
             self.rotate_to_goal(desired_state)
         else:
-            self.rotate_manually(0.0)
+            self._io.set_position(self.inputs.turret_position)
 
     def get_component_pose(self) -> Pose3d:
         """Gets the articulated component pose for AdvantageScope."""
