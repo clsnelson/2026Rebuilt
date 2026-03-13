@@ -96,16 +96,16 @@ class Superstructure(Subsystem):
 
         Goal.AIMOUTPOST: (
             None, None, 
-            LauncherSubsystem.SubsystemState.PASS,
-            HoodSubsystem.SubsystemState.PASS,
+            LauncherSubsystem.SubsystemState.SCORE,
+            HoodSubsystem.SubsystemState.AIMBOT,
             TurretSubsystem.SubsystemState.OUTPOST,
             True
         ),
 
         Goal.AIMDEPOT: (
             None, None, 
-            LauncherSubsystem.SubsystemState.PASS,
-            HoodSubsystem.SubsystemState.PASS,
+            LauncherSubsystem.SubsystemState.SCORE,
+            HoodSubsystem.SubsystemState.AIMBOT,
             TurretSubsystem.SubsystemState.DEPOT,
             True
         ),
