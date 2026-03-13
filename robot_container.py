@@ -463,7 +463,7 @@ class RobotContainer:
                 )
             ).onFalse(
                 self.superstructure.set_goal_command(
-                    Superstructure.Goal.DEFAULT
+                    Superstructure.Goal.STOPLAUNCH
                 )
             )
             Trigger(
