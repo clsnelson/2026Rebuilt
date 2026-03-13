@@ -7,31 +7,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Aim to Hub"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Circle 1 1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Launch"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Default"
           }
         },
@@ -42,7 +17,20 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Circle 1 2"
+                  "pathName": "Rush Center"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Plow Center"
                 }
               },
               {
@@ -57,25 +45,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Default"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Circle 1 3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Circle 1 4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Aim to Hub"
+            "name": "Aim to Outpost"
           }
         },
         {
@@ -85,9 +55,27 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 5.0
+            "pathName": "Align 2nd Pass"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Clear Behind Hub"
           }
         },
         {
@@ -99,13 +87,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Circle 1 5"
+            "pathName": "End Clear To Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Circle 1 6"
+            "pathName": "Return To Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
           }
         }
       ]
