@@ -56,11 +56,11 @@ class Superstructure(Subsystem):
     ]] = {
 
         Goal.DEFAULT: (
-            IntakeSubsystem.SubsystemState.STOP,
+            None,#IntakeSubsystem.SubsystemState.STOP,
             FeederSubsystem.SubsystemState.STOP,
             LauncherSubsystem.SubsystemState.IDLE,
             HoodSubsystem.SubsystemState.STOW,
-            TurretSubsystem.SubsystemState.HUB,
+            None, #TurretSubsystem.SubsystemState.HUB,
             True
         ),
 
@@ -73,14 +73,14 @@ class Superstructure(Subsystem):
         ),
 
         Goal.LAUNCH: (
-            IntakeSubsystem.SubsystemState.INTAKE,
+            None,#IntakeSubsystem.SubsystemState.INTAKE,
             FeederSubsystem.SubsystemState.INWARD,
             None,
             None, None, True
         ),
 
         Goal.STOPLAUNCH: (
-            IntakeSubsystem.SubsystemState.STOP,
+            None,#IntakeSubsystem.SubsystemState.STOP,
             FeederSubsystem.SubsystemState.STOP,
             None,
             None, None, True
@@ -90,7 +90,7 @@ class Superstructure(Subsystem):
             None, None, 
             LauncherSubsystem.SubsystemState.SCORE,
             HoodSubsystem.SubsystemState.AIMBOT,
-            TurretSubsystem.SubsystemState.HUB,
+            None, #TurretSubsystem.SubsystemState.HUB,
             True  # track so aiming block runs and DistanceToHub is updated
         ),
 
@@ -98,7 +98,7 @@ class Superstructure(Subsystem):
             None, None, 
             LauncherSubsystem.SubsystemState.SCORE,
             HoodSubsystem.SubsystemState.AIMBOT,
-            TurretSubsystem.SubsystemState.OUTPOST,
+            None, #TurretSubsystem.SubsystemState.OUTPOST,
             True
         ),
 
@@ -106,7 +106,7 @@ class Superstructure(Subsystem):
             None, None, 
             LauncherSubsystem.SubsystemState.SCORE,
             HoodSubsystem.SubsystemState.AIMBOT,
-            TurretSubsystem.SubsystemState.DEPOT,
+            None, #TurretSubsystem.SubsystemState.DEPOT,
             True
         ),
 
@@ -297,7 +297,7 @@ class Superstructure(Subsystem):
 
         if not launcher_state is None:
             self.launcher.set_desired_state(launcher_state)
-
+        
         if not hood_state is None:
             self.hood.set_desired_state(hood_state)
 

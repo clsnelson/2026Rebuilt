@@ -11,16 +11,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Rush Center"
-                }
-              }
-            ]
+            "pathName": "Rush Center"
           }
         },
         {
@@ -49,12 +42,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Launch"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Align 2nd Pass"
@@ -67,15 +54,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Clear Behind Hub"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Clear Behind Hub"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -91,15 +85,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Aim to Hub"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Return To Shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Return To Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Aim to Hub"
+                }
+              }
+            ]
           }
         },
         {

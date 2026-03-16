@@ -287,11 +287,7 @@ class RobotContainer:
         )
         NamedCommands.registerCommand(
             "Launch",
-            self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH)
-        )
-        NamedCommands.registerCommand(
-            "Intake",
-            self.superstructure.set_goal_command(Superstructure.Goal.INTAKE)
+            self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH).alongWith(self.intake.set_desired_state_command(self.intake.SubsystemState.INTAKE))
         )
         NamedCommands.registerCommand(
             "Aim to Depot",
